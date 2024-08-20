@@ -28,11 +28,11 @@ const resolvers = {
 
       return { ...data.user, token: data.token }
     },
-    signin: async (_:any, args:SignInArgs) => {
+    signIn: async (_:any, args:SignInArgs) => {
       const data = await signin(args.input)
 
       if (!data || !data.user || !data.token) {
-        throw new GraphQLError('UNAUTHORIZED', {
+        throw new GraphQLError('Invalid credentials', {
           extensions: { code: 'AUTH_ERROR' },
         })
       }
