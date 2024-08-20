@@ -1,6 +1,14 @@
-import { GQLContext } from "@/types";
+import { GQLContext, SignInInput, SignUpInput } from "@/types";
 import { signin, getUserFromToken, signup } from "@/lib/auth";
 import { GraphQLError } from "graphql";
+
+type SignInArgs = {
+  input: SignInInput;
+};
+
+type SignUpArgs = {
+  input: SignUpInput;
+};
 
 const resolvers = {
   Query: {
@@ -9,7 +17,7 @@ const resolvers = {
     }
   },
   Mutation: {
-    createUser: async (_:any, args) => {
+    createUser: async (_:any, args:SignUpArgs) => {
       const data = await signup(args.input)
 
       if (!data || !data.user || !data.token) {
@@ -20,7 +28,7 @@ const resolvers = {
 
       return { ...data.user, token: data.token }
     },
-    signin: async (_:any, args) => {
+    signin: async (_:any, args:SignInArgs) => {
       const data = await signin(args.input)
 
       if (!data || !data.user || !data.token) {
