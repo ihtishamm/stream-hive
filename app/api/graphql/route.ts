@@ -7,6 +7,7 @@ import {
 import { NextRequest } from 'next/server'
 import typeDefs from './schema'
 import resolvers from './resolvers'
+import { getUserFromToken } from '@/lib/auth'
 
 let plugins = []
 if (process.env.NODE_ENV === 'production') {
@@ -27,7 +28,13 @@ const server = new ApolloServer({
 })
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
- 
+    context: async (req) => {
+      const user = await getUserFromToken(req.headers.get('authorization') ?? '')
+      return {
+        req,
+        user,
+      }
+    },
 })
 
 export async function GET(request: NextRequest) {
