@@ -81,6 +81,72 @@ const resolvers = {
         });
 
   },
+  editAnnouncement: async (_:any, args:{input:{id:string, message:string}}, ctx:GQLContext) => {
+    if (!ctx.user) {
+      throw new GraphQLError("Unauthorized", {
+        extensions: { code: 'UNAUTHENTICATED' },
+      });
+    }
+
+    const announcement = await prisma.announcement.findUnique({
+      where: {
+        id: args.input.id,
+      },
+      include: {
+        user: true,
+      },
+    });
+
+    if (!announcement || announcement.userId !== ctx.user.id) {
+      throw new GraphQLError("you can only update your announcements", {
+        extensions: { code: 'UNAUTHENTICATED' },
+      });
+    }
+
+    return await prisma.announcement.update({
+      where: {
+        id: args.input.id,
+      },
+      data: {
+        message: args.input.message,
+      },
+      include: {
+        user: true,
+      },
+    });
+  },
+  deleteAnnouncement: async (_:any, args:{id:string}, ctx:GQLContext) => {
+    if (!ctx.user) {
+      throw new GraphQLError("Unauthorized", {
+        extensions: { code: '401' },
+      });
+    }
+
+    const announcement = await prisma.announcement.findUnique({
+      where: {
+        id: args.id,
+      },
+      include: {
+        user: true,
+      },
+    });
+  
+
+    if (!announcement || announcement.userId !== ctx.user.id) {
+      throw new GraphQLError("you can only delete your announcements", {
+        extensions: { code: '401' },
+      });
+    }
+
+    await prisma.announcement.delete({
+      where: {
+        id: args.id,
+      },
+    });
+
+    return args.id;
+  }
+
 }
 };
 
