@@ -145,8 +145,83 @@ const resolvers = {
     });
 
     return args.id;
-  }
+  },
+  followUser: async (_: any, args: { input: { followingId: string } }, ctx: GQLContext) => {
+    if (!ctx.user) {
+      throw new GraphQLError("Unauthorized", {
+        extensions: { code: '401' },
+      });
+    }
 
+    if (ctx.user.id === args.input.followingId) {
+      throw new GraphQLError("You can't follow yourself", {
+        extensions: { code: '401' },
+      });
+    }
+
+    const existingFollowEngagement = await prisma.followEngagement.findFirst({
+      where: {
+        followerId: ctx.user.id,
+        followingId: args.input.followingId,
+      },
+    });
+
+    if (existingFollowEngagement) {
+      throw new GraphQLError("You are already following this user", {
+        extensions: { code: '401' },
+      });
+    }
+
+    const newFollowEngagement = await prisma.followEngagement.create({
+      data: {
+        followerId: ctx.user.id,
+        followingId: args.input.followingId,
+        engagementType: 'FOLLOW',
+      },
+      include: {
+        follower: true, 
+        following: true, 
+      },
+    });
+
+    return newFollowEngagement;
+  },
+
+  
+   unfollowUser: async (_:any, args:{input:{followingId:string}}, ctx:GQLContext) => {
+        
+      if (!ctx.user) {
+        throw new GraphQLError("Unauthorized", {
+          extensions: { code: '401' },
+        });
+      }
+  
+      if (ctx.user.id === args.input.followingId) {
+        throw new GraphQLError("you can't unfollow yourself", {
+          extensions: { code: '401' },
+        });
+      }
+  
+      const followEngagement = await prisma.followEngagement.findFirst({
+        where: {
+          followerId: ctx.user.id,
+          followingId: args.input.followingId,
+        },
+      });
+  
+      if (!followEngagement) {
+        throw new GraphQLError("you are not following this user", {
+          extensions: { code: '401' },
+        });
+      }
+  
+     await prisma.followEngagement.delete({
+      where: {
+        followerId_followingId: { followerId:ctx.user.id, followingId:args.input.followingId },
+      },
+    });
+    return args.input.followingId;
+    }
 }
 };
 
