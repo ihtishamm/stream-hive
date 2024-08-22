@@ -1,5 +1,5 @@
 import { GQLContext, SignInInput, SignUpInput } from "@/types";
-import { signin, getUserFromToken, signup } from "@/lib/auth";
+import { signin, signup } from "@/lib/auth";
 import { GraphQLError } from "graphql";
 
 type SignInArgs = {
