@@ -1,7 +1,9 @@
 import { GQLContext, SignInInput, SignUpInput } from "@/types";
 import { signin, signup } from "@/lib/auth";
-import { GraphQLError } from "graphql";
+import { GraphQLError, } from "graphql";
 import prisma from "@/lib/db";
+import { GraphqlUpload } from "graphql-upload";
+import cloudinary from "@/lib/Cloudinary";
 
 type SignInArgs = {
   input: SignInInput;
@@ -12,6 +14,7 @@ type SignUpArgs = {
 };
 
 const resolvers = {
+  Upload: GraphqlUpload,
   Query: {
     me: async (_:any, __:any, ctx:GQLContext) => {
       return ctx.user
@@ -335,7 +338,43 @@ const resolvers = {
               announcement:true
             }
           });
-  }
+  },
+  uploadVideo: async(_:any,{input}:any, ctx:GQLContext) => {
+        if(!ctx.user){
+          throw new GraphQLError("Unauthorized", {
+            extensions: { code: '401' },
+          });
+        }
+        const { title, description, thumbnailFile, videoFile, publish } = input;
+        const thumbnailUpload = await cloudinary.uploader.upload(thumbnailFile.path, {
+          folder: 'thumbnails',
+          resource_type: 'image',
+        });
+  
+        const videoUpload = await cloudinary.uploader.upload(videoFile.path, {
+          folder: 'videos',
+          resource_type: 'video',
+          chunk_size: 6000000, // 6MB chunks
+          eager: [
+            { streaming_profile: 'hd', format: 'm3u8' },
+            { streaming_profile: 'sd', format: 'm3u8' },
+          ],
+        });
+         
+        const video = await prisma.video.create({
+          data: {
+            title,
+            description,
+            thumbnailUrl: thumbnailUpload.secure_url,
+            videoUrl: videoUpload.secure_url,
+            publish,
+            userId: ctx.user.id,
+          },
+        });
+
+
+         return video;
+      }
 },
 User: {
   Followers: async (parent: any) => {
