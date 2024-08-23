@@ -1,6 +1,6 @@
 const schema = `#graphql
    
-   enum EngagementType {
+  enum EngagementType {
   LIKE
   DISLIKE
   SAVE
@@ -24,7 +24,17 @@ const schema = `#graphql
         message:String!
         createdAt: String!
         user: User!
+        likeCount: Int!
+        dislikeCount: Int!
      }
+
+  type AnnouncementEngagement {
+  user: User!
+  announcement: Announcement!
+  engagementType: EngagementType!
+  createdAt: String!
+}
+
     
       type FollowEngagement {
       engagementType: EngagementType!
@@ -58,16 +68,19 @@ const schema = `#graphql
      followingId: ID!
 }
 
+  input AnnouncementEngagementInput {
+  announcementId: ID!
+}
 
 
  type Query {
-    me: User
-    getAllAnnouncements: [Announcement!]!
-    getUserAnnouncements(userid: ID!): [Announcement!]!
+     me: User
+     getAllAnnouncements: [Announcement!]!
+     getUserAnnouncements(userid: ID!): [Announcement!]!
      getUserFollowers(userId: ID!): [User!]!
      getUserFollowing(userId: ID!): [User!]!
-  }
-
+     
+}
   type Mutation {
     signIn(input: signInInput!): User
     createUser(input: signUpInput!): User
@@ -76,6 +89,8 @@ const schema = `#graphql
     deleteAnnouncement(id: ID!): ID!
     followUser(input: FollowInput!): FollowEngagement!
     unfollowUser(input: FollowInput!): ID!
+    likeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
+    dislikeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
   }
 
 `
