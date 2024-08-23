@@ -17,7 +17,19 @@ const schema = `#graphql
     Announcements: [Announcement]!
     Followers: [User]!
     Followings: [User]!
+    Video: [Video]!
     }
+
+     type Video{
+      id: ID!
+      title: String!
+      description: String!
+      thumbnailUrl: String!
+      videoUrl: String!
+      publish: Boolean!
+      createdAt: String!
+      user: User!
+     }
 
      type Announcement {
         id: ID!
@@ -71,6 +83,13 @@ const schema = `#graphql
   input AnnouncementEngagementInput {
   announcementId: ID!
 }
+   input VideoInput {
+    title: String!
+    description: String!
+    thumbnailFile: Upload!
+    videoFile: Upload!
+     publish: Boolean = true
+  }
 
 
  type Query {
@@ -91,6 +110,7 @@ const schema = `#graphql
     unfollowUser(input: FollowInput!): ID!
     likeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
     dislikeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
+    uploadVideo(input: VideoInput!): Video!
   }
 
 `
