@@ -243,7 +243,99 @@ const resolvers = {
       },
     });
     return args.input.followingId;
-    }
+    },
+    likeAnnouncement: async (_:any, args:{input:{announcementId:string}},ctx:GQLContext) => {
+      if(!ctx.user){
+        throw new GraphQLError("Unauthorized", {
+          extensions: { code: '401' },
+        });
+      }
+      
+        const existedEngagement = await prisma.announcementEngagement.findFirst({
+          where:{
+            userId:ctx.user.id,
+            announcementId:args.input.announcementId
+          }
+          
+    });
+          console.log(existedEngagement, 'existedEngagement');
+          if(existedEngagement){
+            if(existedEngagement.engagementType === 'LIKE'){
+              await prisma.announcementEngagement.delete({
+                where:{
+                 userId_announcementId:{userId:ctx.user.id, announcementId:args.input.announcementId}
+                }
+              });
+              return "unliked";
+            } 
+            else if(existedEngagement.engagementType === 'DISLIKE'){
+              await prisma.announcementEngagement.update({
+                where:{
+                  userId_announcementId:{userId:ctx.user.id, announcementId:args.input.announcementId}
+                },
+                data:{
+                  engagementType:'LIKE'
+                }
+              });
+            }
+          }
+
+           return await prisma.announcementEngagement.create({
+            data:{
+              userId:ctx.user.id,
+              announcementId:args.input.announcementId,
+              engagementType:'LIKE'
+            },
+            include:{
+              announcement:true
+            }
+          });
+
+  },
+     dislikeAnnouncement: async (_:any, args:{input:{announcementId:string}},ctx:GQLContext) => {
+      if(!ctx.user){
+        throw new GraphQLError("Unauthorized", {
+          extensions: { code: '401' },
+        });
+      }
+        const existedEngagement = await prisma.announcementEngagement.findFirst({
+          where:{
+            userId:ctx.user.id,
+            announcementId:args.input.announcementId
+          }
+    });
+          if(existedEngagement){
+            if(existedEngagement.engagementType === 'DISLIKE'){
+              await prisma.announcementEngagement.delete({
+                where:{
+                 userId_announcementId:{userId:ctx.user.id, announcementId:args.input.announcementId}
+                }
+              });
+              return "undisliked";
+            } 
+            else if(existedEngagement.engagementType === 'LIKE'){
+              await prisma.announcementEngagement.update({
+                where:{
+                  userId_announcementId:{userId:ctx.user.id, announcementId:args.input.announcementId}
+                },
+                data:{
+                  engagementType:'DISLIKE'
+                }
+              });
+            }
+          }
+
+           return await prisma.announcementEngagement.create({
+            data:{
+              userId:ctx.user.id,
+              announcementId:args.input.announcementId,
+              engagementType:'DISLIKE'
+            },
+            include:{
+              announcement:true
+            }
+          });
+  }
 },
 User: {
   Followers: async (parent: any) => {
@@ -271,6 +363,33 @@ User: {
     return followings.map((engagement) => engagement.following);
   },
 },
+Announcement:{
+  likeCount: async (parent: any) => {
+  const count = await prisma.announcementEngagement.count({
+      where:{
+        announcementId:parent.id,
+        engagementType:'LIKE'
+      }
+    });
+     return count;
+  },
+   dislikeCount: async (parent:any) => {
+    const count = await prisma.announcementEngagement.count({
+      where:{
+        announcementId:parent.id,
+        engagementType:'DISLIKE'
+      }
+    })
+      return count;
+  }
+},
+AnnouncementEngagement: {
+  announcement: async (parent:any, _args:any) => {
+    return await prisma.announcement.findUnique({
+      where: { id: parent.announcementId },
+    });
+  },
+}
 };
 
 export default resolvers;
