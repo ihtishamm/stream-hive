@@ -38,7 +38,31 @@ const resolvers = {
           createdAt: 'desc',
         },
       });
-    }
+    },
+    getUserFollowers: async (_:any, args:{userId:string}) => {
+      const followers = await prisma.followEngagement.findMany({
+        where: {
+          followingId: args.userId,
+          engagementType: 'FOLLOW',
+        },
+        include: {
+          follower: true,
+        },
+      });
+      return followers.map(f => f.follower);
+    },
+    getUserFollowing: async (_:any, args:{userId:string}) => {
+      const following = await prisma.followEngagement.findMany({
+        where: {
+          followerId: args.userId,
+          engagementType: 'FOLLOW',
+        },
+        include: {
+          following: true,
+        },
+      });
+      return following.map(f => f.following);
+    },
   },
   Mutation: {
     createUser: async (_:any, args:SignUpArgs) => {
@@ -185,9 +209,7 @@ const resolvers = {
     });
 
     return newFollowEngagement;
-  },
-
-  
+  }, 
    unfollowUser: async (_:any, args:{input:{followingId:string}}, ctx:GQLContext) => {
         
       if (!ctx.user) {
@@ -222,7 +244,33 @@ const resolvers = {
     });
     return args.input.followingId;
     }
-}
+},
+User: {
+  Followers: async (parent: any) => {
+    const followers = await prisma.followEngagement.findMany({
+      where: {
+        followingId: parent.id,
+        engagementType: 'FOLLOW',
+      },
+      include: {
+        follower: true,
+      },
+    });
+    return followers.map((engagement) => engagement.follower);
+  },
+  Followings: async (parent: any) => {
+    const followings = await prisma.followEngagement.findMany({
+      where: {
+        followerId: parent.id,
+        engagementType: 'FOLLOW',
+      },
+      include: {
+        following: true,
+      },
+    });
+    return followings.map((engagement) => engagement.following);
+  },
+},
 };
 
 export default resolvers;
