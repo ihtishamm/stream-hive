@@ -1,3 +1,6 @@
+
+
+
 const schema = `#graphql
    
   enum EngagementType {
@@ -8,6 +11,8 @@ const schema = `#graphql
   VIEW
 }
 
+    scalar Upload 
+     
    type User {
     id: ID!
     name: String!

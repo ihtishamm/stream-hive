@@ -25,6 +25,7 @@ const server = new ApolloServer({
   resolvers,
   typeDefs,
   plugins,
+  csrfPrevention: true,
 })
 
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
