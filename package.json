@@ -21,6 +21,7 @@
     "dotenv": "^16.4.5",
     "graphql": "^16.9.0",
     "graphql-upload": "^16.0.2",
+    "graphql-upload-ts": "^2.1.2",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.5",
     "react": "^18",

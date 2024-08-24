@@ -2,7 +2,8 @@ import { GQLContext, SignInInput, SignUpInput } from "@/types";
 import { signin, signup } from "@/lib/auth";
 import { GraphQLError, } from "graphql";
 import prisma from "@/lib/db";
-import { GraphqlUpload } from "graphql-upload";
+import { GraphQLUpload } from "graphql-upload-ts";
+import { Upload } from "graphql-upload-ts";
 import cloudinary from "@/lib/Cloudinary";
 
 type SignInArgs = {
@@ -14,7 +15,7 @@ type SignUpArgs = {
 };
 
 const resolvers = {
-  Upload: GraphqlUpload,
+  Upload: Upload,
   Query: {
     me: async (_:any, __:any, ctx:GQLContext) => {
       return ctx.user
