@@ -103,6 +103,8 @@ const schema = `#graphql
      getUserAnnouncements(userid: ID!): [Announcement!]!
      getUserFollowers(userId: ID!): [User!]!
      getUserFollowing(userId: ID!): [User!]!
+     getallVideos: [Video!]!
+     getUservideos(userId: ID!): [Video!]!
      
 }
   type Mutation {

@@ -67,6 +67,29 @@ const resolvers = {
       });
       return following.map(f => f.following);
     },
+    getallVideos: async () => {
+      return await prisma.video.findMany({
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    },
+    getUservideos: async (_:any, args:{userId:string}) => {
+      return await prisma.video.findMany({
+        where: {
+          userId: args.userId,
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    },
   },
   Mutation: {
     createUser: async (_:any, args:SignUpArgs) => {
@@ -426,6 +449,13 @@ User: {
     });
     return followings.map((engagement) => engagement.following);
   },
+  Video: async (parent: any) => {
+    return await prisma.video.findMany({
+      where: {
+        userId: parent.id,
+      },
+    });
+  }
 },
 Announcement:{
   likeCount: async (parent: any) => {
