@@ -90,6 +90,20 @@ const resolvers = {
         },
       });
     },
+    getVideoComments: async (_:any, args:{videoId:string}) => {
+      return await prisma.comment.findMany({
+        where: {
+          videoId: args.videoId,
+        },
+        include: {
+          user: true,
+          video: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    }
   },
   Mutation: {
     createUser: async (_:any, args:SignUpArgs) => {
@@ -416,6 +430,24 @@ const resolvers = {
       });
     }
   },
+  addComment: async (_:any, args:{input:{videoId:string, message:string}}, ctx:GQLContext) => {
+    if(!ctx.user){
+      throw new GraphQLError("Unauthorized", {
+        extensions: { code: '401' },
+      });
+    }
+    return await prisma.comment.create({
+      data:{
+        message:args.input.message,
+        userId:ctx.user.id,
+        videoId:args.input.videoId
+      },
+      include:{
+        user:true,
+        video:true
+      }
+    });
+  }
 },
 
 
