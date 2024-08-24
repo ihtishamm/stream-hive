@@ -35,6 +35,13 @@ const schema = `#graphql
       createdAt: String!
       user: User!
      }
+      type Comment {
+        id: ID!
+        message: String!
+        createdAt: String!
+        user: User!
+        video: Video!
+        }
 
      type Announcement {
         id: ID!
@@ -95,6 +102,10 @@ const schema = `#graphql
     videoFile: Upload!
      publish: Boolean = true
   }
+       input CommentInput {
+        videoId: ID!
+        message: String!
+        }
 
 
  type Query {
@@ -105,6 +116,7 @@ const schema = `#graphql
      getUserFollowing(userId: ID!): [User!]!
      getallVideos: [Video!]!
      getUservideos(userId: ID!): [Video!]!
+      getVideoComments(videoId: ID!): [Comment!]!
      
 }
   type Mutation {
@@ -118,6 +130,7 @@ const schema = `#graphql
     likeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
     dislikeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
     uploadVideo(input: VideoInput!): Video!
+     addComment(input: CommentInput!): Comment!
   }
 
 `
