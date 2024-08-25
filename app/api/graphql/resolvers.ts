@@ -3,7 +3,6 @@ import { signin, signup } from "@/lib/auth";
 import { GraphQLError, } from "graphql";
 import prisma from "@/lib/db";
 import { GraphQLUpload } from "graphql-upload-ts";
-import { Upload } from "graphql-upload-ts";
 import cloudinary from "@/lib/Cloudinary";
 
 type SignInArgs = {
@@ -496,6 +495,54 @@ const resolvers = {
       },
     });
     return playlist;
+  },
+  addVideoToPlaylist: async (_: any, args: { input: { playlistId: string, videoId: string } }, ctx: GQLContext) => {
+    if (!ctx.user) {
+      throw new GraphQLError("Unauthorized", {
+        extensions: { code: '401' },
+      });
+    }
+
+    const playlist = await prisma.playlist.findUnique({
+      where: { id: args.input.playlistId },
+    });
+
+    if (!playlist) {
+      throw new GraphQLError("Playlist not found", {
+        extensions: { code: '404' },
+      });
+    }
+
+    const video = await prisma.video.findUnique({
+      where: { id: args.input.videoId },
+    });
+
+    if (!video) {
+      throw new GraphQLError("Video not found", {
+        extensions: { code: '404' },
+      });
+    }
+
+    const playlistHasVideo = await prisma.playlistHasVideo.create({
+      data: {
+        playlist: {
+          connect: {
+            id: args.input.playlistId,
+          },
+        },
+        video: {
+          connect: {
+            id: args.input.videoId,
+          },
+        },
+      },
+      include: {
+        playlist: true,
+        video: true,
+      },
+    });
+
+    return playlistHasVideo;
   }
   
   
