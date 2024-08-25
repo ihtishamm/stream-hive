@@ -447,7 +447,58 @@ const resolvers = {
         video:true
       }
     });
+  },
+  createPlaylist: async (_: any, args: { input: { title: string, description: string, videoId: string } }, ctx: GQLContext) => {
+    if (!ctx.user) {
+      throw new GraphQLError("Unauthorized", {
+        extensions: { code: '401' },
+      });
+    }
+
+    const video = await prisma.video.findUnique({
+      where: { id: args.input.videoId },
+    });
+  
+    if (!video) {
+      throw new GraphQLError("Video not found", {
+        extensions: { code: '404' },
+      });
+    }
+  
+  
+
+    const playlist = await prisma.playlist.create({
+      data: {
+        title: args.input.title,
+        description: args.input.description,
+        user: {
+          connect: {
+            id: ctx.user.id,
+          },
+        },
+        videos: {
+          create: {
+            video: {
+              connect: {
+                id: args.input.videoId,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        videos: {
+          include: {
+            video: true,
+          },
+        },
+        user: true,
+      },
+    });
+    return playlist;
   }
+  
+  
 },
 
 
