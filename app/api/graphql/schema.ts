@@ -127,6 +127,10 @@ const schema = `#graphql
   videoId: ID! 
 }
 
+ input AddVideoToPlaylist{
+  playlistId: ID!
+  videoId: ID!
+  }
 
  type Query {
      me: User
@@ -137,6 +141,8 @@ const schema = `#graphql
      getallVideos: [Video!]!
      getUservideos(userId: ID!): [Video!]!
       getVideoComments(videoId: ID!): [Comment!]!
+      getPlaylistVideos(playlistId: ID!): [PlaylistHasVideo!]!
+      getUserPlaylists(userId: ID!): [Playlist!]!
      
 }
   type Mutation {
@@ -151,7 +157,8 @@ const schema = `#graphql
     dislikeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
     uploadVideo(input: VideoInput!): Video!
      addComment(input: CommentInput!): Comment!
-     createPlaylist(input: CreatePlaylistWithVideoInput!): Playlist! 
+     createPlaylist(input: CreatePlaylistWithVideoInput!): Playlist!
+      addVideoToPlaylist(input: AddVideoToPlaylist!): PlaylistHasVideo!
   }
 
 `
