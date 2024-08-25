@@ -23,6 +23,7 @@ const schema = `#graphql
     Followers: [User]!
     Followings: [User]!
     Video: [Video]!
+    playlists: [Playlist]!
     }
 
      type Video{
@@ -51,6 +52,19 @@ const schema = `#graphql
         likeCount: Int!
         dislikeCount: Int!
      }
+         type Playlist {
+        id: ID!
+        title: String!
+        description: String
+        createdAt: String!
+        user: User!
+        videos: [PlaylistHasVideo!]!
+      }
+         type PlaylistHasVideo {
+         id: ID!
+          playlist: Playlist!
+          video: Video!
+}
 
   type AnnouncementEngagement {
   user: User!
@@ -107,6 +121,12 @@ const schema = `#graphql
         message: String!
         }
 
+  input CreatePlaylistWithVideoInput {
+  title: String!
+  description: String
+  videoId: ID! 
+}
+
 
  type Query {
      me: User
@@ -131,6 +151,7 @@ const schema = `#graphql
     dislikeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
     uploadVideo(input: VideoInput!): Video!
      addComment(input: CommentInput!): Comment!
+     createPlaylist(input: CreatePlaylistWithVideoInput!): Playlist! 
   }
 
 `
