@@ -102,7 +102,37 @@ const resolvers = {
           createdAt: 'desc',
         },
       });
-    }
+    },
+    getUserPlaylists: async (_:any, args:{userId:string}) => {
+      return await prisma.playlist.findMany({
+        where: {
+          userId: args.userId,
+        },
+        include: {
+          user: true,
+          videos: {
+            include: {
+              video: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    },
+    getPlaylistVideos: async (_:any, args:{playlistId:string}) => {
+      const playlistvideos = await prisma.playlistHasVideo.findMany({
+        where: {
+          playlistId: args.playlistId,
+        },
+        include: {
+          video: true,
+          playlist: true,
+        },
+      });
+       return playlistvideos.map(p => p.video);
+    },
   },
   Mutation: {
     createUser: async (_:any, args:SignUpArgs) => {
