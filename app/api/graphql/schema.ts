@@ -1,15 +1,89 @@
-const schema = `#graphql
 
-   type User {
+
+
+const schema = `#graphql
    
+  enum EngagementType {
+  LIKE
+  DISLIKE
+  SAVE
+  FOLLOW
+  VIEW
+}
+
+    scalar Upload 
+     
+   type User {
     id: ID!
     name: String!
     email: String!
     createdAt: String!
     token: String
+    Announcements: [Announcement]!
+    Followers: [User]!
+    Followings: [User]!
+    Video: [Video]!
+    playlists: [Playlist]!
     }
+
+     type Video{
+      id: ID!
+      title: String!
+      description: String!
+      thumbnailUrl: String!
+      videoUrl: String!
+      publish: Boolean!
+      createdAt: String!
+      user: User!
+     }
+      type Comment {
+        id: ID!
+        message: String!
+        createdAt: String!
+        user: User!
+        video: Video!
+        }
+
+     type Announcement {
+        id: ID!
+        message:String!
+        createdAt: String!
+        user: User!
+        likeCount: Int!
+        dislikeCount: Int!
+     }
+         type Playlist {
+        id: ID!
+        title: String!
+        description: String
+        createdAt: String!
+        user: User!
+        videos: [PlaylistHasVideo!]!
+      }
+         type PlaylistHasVideo {
+         id: ID!
+          playlist: Playlist!
+          video: Video!
+}
+
+  type AnnouncementEngagement {
+  user: User!
+  announcement: Announcement!
+  engagementType: EngagementType!
+  createdAt: String!
+}
+
+    
+      type FollowEngagement {
+      engagementType: EngagementType!
+       createdAt: String!
+       follower: User!       
+       following: User!         
+    }
+
+
       
-     input singInInput {
+     input signInInput {
     email: String!
     password: String!
   }
@@ -20,16 +94,73 @@ const schema = `#graphql
     password: String!
   }
 
+   input createAnnouncementInput {
+      message: String!
+  }
+      
+  input editAnnouncementInput {
+      id: ID!
+    message: String!
+  }
+    input FollowInput {   
+     followingId: ID!
+}
+
+  input AnnouncementEngagementInput {
+  announcementId: ID!
+}
+   input VideoInput {
+    title: String!
+    description: String!
+    thumbnailFile: Upload!
+    videoFile: Upload!
+     publish: Boolean = true
+  }
+       input CommentInput {
+        videoId: ID!
+        message: String!
+        }
+
+  input CreatePlaylistWithVideoInput {
+  title: String!
+  description: String
+  videoId: ID! 
+}
+
+ input AddVideoToPlaylist{
+  playlistId: ID!
+  videoId: ID!
+  }
 
  type Query {
-    me: User
-  }
-
+     me: User
+     getAllAnnouncements: [Announcement!]!
+     getUserAnnouncements(userid: ID!): [Announcement!]!
+     getUserFollowers(userId: ID!): [User!]!
+     getUserFollowing(userId: ID!): [User!]!
+     getallVideos: [Video!]!
+     getUservideos(userId: ID!): [Video!]!
+      getVideoComments(videoId: ID!): [Comment!]!
+      getPlaylistVideos(playlistId: ID!): [PlaylistHasVideo!]!
+      getUserPlaylists(userId: ID!): [Playlist!]!
+     
+}
   type Mutation {
-    signIn(input: singInInput!): User
+    signIn(input: signInInput!): User
     createUser(input: signUpInput!): User
+    createAnnouncement(input: createAnnouncementInput!): Announcement!
+    editAnnouncement(input: editAnnouncementInput!): Announcement!
+    deleteAnnouncement(id: ID!): ID!
+    followUser(input: FollowInput!): FollowEngagement!
+    unfollowUser(input: FollowInput!): ID!
+    likeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
+    dislikeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
+    uploadVideo(input: VideoInput!): Video!
+     addComment(input: CommentInput!): Comment!
+     createPlaylist(input: CreatePlaylistWithVideoInput!): Playlist!
+      addVideoToPlaylist(input: AddVideoToPlaylist!): PlaylistHasVideo!
   }
 
-  
 `
+
 export default schema;
