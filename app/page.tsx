@@ -1,10 +1,26 @@
 
+import {  videos } from "@/dummy-data/Home"
+// import { PageHeader } from "@/components/Header"
+// import { VideoGridItem } from "@/components/VideoGridItems"
+import { Sidebar } from "@/components/Sidebar"
+import { SidebarProvider } from "@/contexts/sidebarContext"
 
-export default  function Home() {
+export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center w-full flex-1 px-20 text-center">
-    
-       <h1>hiii thereee now let's build UI</h1>
-  </main>
-  );
+    <SidebarProvider>
+      <div className="max-h-screen flex flex-col">
+           <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Button</button>
+        <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
+          <Sidebar />
+          <div className="overflow-x-hidden px-8 pb-4">
+            <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+              {videos.map(video => (
+                <video key={video.id} src={video.videoUrl}/>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </SidebarProvider>
+  )
 }
