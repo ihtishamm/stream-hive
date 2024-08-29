@@ -54,7 +54,7 @@ export function VideoGridItem({
       onMouseEnter={() => setIsVideoPlaying(true)}
       onMouseLeave={() => setIsVideoPlaying(false)}
     >
-      <Link href={`/watch?v=${id}`} className="relative aspect-video">
+      <Link href={`/watch/${id}`} className="relative aspect-video">
         <Image
           src={thumbnailUrl}
           alt={title}
@@ -87,7 +87,7 @@ export function VideoGridItem({
           />
         </Link>
         <div className="flex flex-col">
-          <Link href={`/watch?v=${id}`} className="font-bold">
+          <Link href={`/watch/${id}`} className="font-bold">
             {title}
           </Link>
           <Link href={`/@${channel.id}`} className="text-secondary-text text-sm">
