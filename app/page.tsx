@@ -1,10 +1,25 @@
 
+import {  videos } from "@/dummy-data/Home"
+import { PageHeader } from "@/components/Header"
 
-export default  function Home() {
+import { Sidebar } from "@/components/Sidebar"
+import { VideoGridItem } from "@/components/VideoGridItems"
+
+export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center w-full flex-1 px-20 text-center">
-    
-       <h1>hiii thereee</h1>
-  </main>
-  );
+ 
+      <div className="max-h-screen flex flex-col">
+      <PageHeader/>
+        <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
+          <Sidebar />
+          <div className="overflow-x-hidden px-8 pb-4">
+            <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+              {videos.map(video => (
+                <VideoGridItem key={video.id}  {...video}/>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+  )
 }
