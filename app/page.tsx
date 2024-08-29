@@ -3,14 +3,13 @@ import {  videos } from "@/dummy-data/Home"
 import { PageHeader } from "@/components/Header"
 
 import { Sidebar } from "@/components/Sidebar"
-import { SidebarProvider } from "@/contexts/sidebarContext"
 import { VideoGridItem } from "@/components/VideoGridItems"
 
 export default function Home() {
   return (
-    <SidebarProvider>
+ 
       <div className="max-h-screen flex flex-col">
-<PageHeader/>
+      <PageHeader/>
         <div className="grid grid-cols-[auto,1fr] flex-grow-1 overflow-auto">
           <Sidebar />
           <div className="overflow-x-hidden px-8 pb-4">
@@ -22,6 +21,5 @@ export default function Home() {
           </div>
         </div>
       </div>
-    </SidebarProvider>
   )
 }
