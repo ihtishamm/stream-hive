@@ -3,3 +3,9 @@
 @tailwind utilities;
 
 
+.sticky-card {
+    position: -webkit-sticky; /* Safari */
+    position: sticky;
+    top: 1rem; /* Adjust as needed */
+    z-index: 10; /* Ensure it stays on top if needed */
+  }
