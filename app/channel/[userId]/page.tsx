@@ -7,6 +7,7 @@ import FollowersList from "@/components/follwerList";
 import { Button } from "@/components/Button";
 import { VideoGridItem } from "@/components/VideoGridItems";
 import { PlaylistCardStack } from "@/components/PlaylistCardStack"
+import CommunitySection from "@/components/Announcements";
 
 const dummyPlaylists = [
   {
@@ -63,7 +64,9 @@ export default function UserChannel() {
           </div>
         )
       case "community":
-        return <div>Community Content</div>;
+        return (
+            <CommunitySection/>
+        )
       default:
         return null;
     }
