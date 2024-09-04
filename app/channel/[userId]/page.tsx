@@ -6,6 +6,38 @@ import { useState } from "react";
 import FollowersList from "@/components/follwerList";
 import { Button } from "@/components/Button";
 import { VideoGridItem } from "@/components/VideoGridItems";
+import { PlaylistCardStack } from "@/components/PlaylistCardStack"
+
+const dummyPlaylists = [
+  {
+    id: 1,
+    thumbnailUrl: `${videos[3].thumbnailUrl}`,
+    videoCount: 10,
+    playlistName: "My First Playlist",
+    channelName: "Channel One",
+  },
+  {
+    id: 2,
+    thumbnailUrl: `${videos[4].thumbnailUrl}`,
+    videoCount: 20,
+    playlistName: "My Second Playlist",
+    channelName: "Channel Two",
+  },
+  {
+    id: 2,
+    thumbnailUrl: `${videos[4].thumbnailUrl}`,
+    videoCount: 20,
+    playlistName: "My Second Playlist",
+    channelName: "Channel Two",
+  },
+  {
+    id: 2,
+    thumbnailUrl: `${videos[4].thumbnailUrl}`,
+    videoCount: 20,
+    playlistName: "My Second Playlist",
+    channelName: "Channel Two",
+  },
+];
 
 export default function UserChannel() {
   const [activeTab, setActiveTab] = useState("videos");
@@ -25,7 +57,11 @@ export default function UserChannel() {
       case "followers":
         return <FollowersList />;
       case "playlists":
-        return <div>Playlists Content</div>;
+        return (
+            <div className="p-2">
+            <PlaylistCardStack items={dummyPlaylists} />
+          </div>
+        )
       case "community":
         return <div>Community Content</div>;
       default:
