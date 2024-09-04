@@ -32,7 +32,7 @@ import { Button } from "@/components/Button"; // Adjust the import according to 
 const FollowersList = () => {
   const [followers] = useState(dummyFollowers); // Using dummy data directly
   const [loading, setLoading] = useState(false); // Set loading state if needed
-  const [error, setError] = useState(null); // Set error state if needed
+  const [error, setError] = useState<any>(null); // Set error state if needed
 
   if (loading) return <div className="text-center text-gray-600">Loading...</div>;
   if (error) return <div className="text-center text-red-600">An error occurred: {error.message}</div>;
