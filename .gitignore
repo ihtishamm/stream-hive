@@ -9,6 +9,7 @@
 # testing
 /coverage
 
+tempnpm-*
 # next.js
 /.next/
 /out/
