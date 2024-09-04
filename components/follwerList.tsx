@@ -1,29 +1,29 @@
 "use client";
 
 const dummyFollowers = [
-    {
-      id: '1',
-      name: 'John Doe',
-      handle: 'johndoe',
-      image: 'https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj',
-      viewerHasFollowed: false,
-    },
-    {
-      id: '2',
-      name: 'Jane Smith',
-      handle: 'janesmith',
-      image: "https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj",
-      viewerHasFollowed: true,
-    },
-    {
-      id: '3',
-      name: 'Alice Johnson',
-      handle: 'alicejohnson',
-      image:  "https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj",
-      viewerHasFollowed: false,
-    },
-  ];
-  
+  {
+    id: '1',
+    name: 'John Doe',
+    handle: 'johndoe',
+    image: 'https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj',
+    viewerHasFollowed: false,
+  },
+  {
+    id: '2',
+    name: 'Jane Smith',
+    handle: 'janesmith',
+    image: "https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj",
+    viewerHasFollowed: true,
+  },
+  {
+    id: '3',
+    name: 'Alice Johnson',
+    handle: 'alicejohnson',
+    image: "https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj",
+    viewerHasFollowed: false,
+  },
+];
+
 
 import Image from "next/image";
 import { useState } from "react";
@@ -38,7 +38,7 @@ const FollowersList = () => {
   if (error) return <div className="text-center text-red-600">An error occurred: {error.message}</div>;
   if (followers.length === 0) return <div className="text-center text-gray-600">No followers found.</div>;
 
-  const handleFollow = (id) => {
+  const handleFollow = (id: string) => {
     // Implement follow/unfollow logic here
     console.log(`Follow/Unfollow user with ID: ${id}`);
   };
