@@ -42,12 +42,12 @@ import { useState } from "react";
 const CommunitySection = () => {
   const [announcements] = useState(dummyAnnouncements);
 
-  const handleLike = (id) => {
+  const handleLike = (id:string) => {
     console.log(`Liked post with ID: ${id}`);
     // Implement like logic here
   };
 
-  const handleDislike = (id) => {
+  const handleDislike = (id:string) => {
     console.log(`Disliked post with ID: ${id}`);
     // Implement dislike logic here
   };
