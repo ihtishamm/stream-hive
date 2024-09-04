@@ -1,14 +1,32 @@
+"use client";
 import Image from "next/image";
 import { subscriptions } from "@/dummy-data/Sidebar";
+import { useState } from "react";
 import { Button } from "@/components/Button";
 
 export default function UserChannel() {
+  const [activeTab, setActiveTab] = useState("videos");
+
   const Immage = `https://yt3.googleusercontent.com/NbeXiY_cA3_-6tujF7Ucf8QSxAy2z5x-My8UYiwyCW9truF3Yc0myEZQlTJeI8sSkc-xYX9KMQ=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj`;
+
+  const renderContent = () => {
+    switch (activeTab) {
+      case "videos":
+        return <div>Videos Content</div>;
+      case "followers":
+        return <div>Followers Content</div>;
+      case "playlists":
+        return <div>Playlists Content</div>;
+      case "community":
+        return <div>Community Content</div>;
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="min-h-screen w-full">
       <div className="gap-4">
-       
         <div className="px-2 md:px-8 py-2 w-full rounded-lg">
           <Image
             src={Immage}
@@ -20,7 +38,6 @@ export default function UserChannel() {
           />
         </div>
 
-       
         <div className="flex flex-col md:flex-row p-8 gap-6">
           <div className="flex-shrink-0">
             <Image
@@ -50,9 +67,43 @@ export default function UserChannel() {
           </div>
         </div>
       </div>
+
       <div className="p-8">
-    
-        <div className="text-center text-gray-500">Tabs, etc...</div>
+        <div className="text-start text-gray-500 flex gap-6">
+          <h2
+            onClick={() => setActiveTab("videos")}
+            className={`cursor-pointer hover:text-black ${
+              activeTab === "videos" ? "text-black font-bold border-b-2 border-black" : ""
+            }`}
+          >
+            Videos
+          </h2>
+          <h2
+            onClick={() => setActiveTab("followers")}
+            className={`cursor-pointer hover:text-black ${
+              activeTab === "followers" ? "text-black font-bold border-b-2 border-black" : ""
+            }`}
+          >
+            Followers
+          </h2>
+          <h2
+            onClick={() => setActiveTab("playlists")}
+            className={`cursor-pointer hover:text-black ${
+              activeTab === "playlists" ? "text-black font-bold border-b-2 border-black" : ""
+            }`}
+          >
+            Playlists
+          </h2>
+          <h2
+            onClick={() => setActiveTab("community")}
+            className={`cursor-pointer hover:text-black ${
+              activeTab === "community" ? "text-black font-bold border-b-2 border-black" : ""
+            }`}
+          >
+            Community
+          </h2>
+        </div>
+        <div className="mt-4">{renderContent()}</div>
       </div>
     </div>
   );
