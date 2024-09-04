@@ -1,8 +1,11 @@
 "use client";
 import Image from "next/image";
+import { videos } from "@/dummy-data/Home";
 import { subscriptions } from "@/dummy-data/Sidebar";
 import { useState } from "react";
+import FollowersList from "@/components/follwerList";
 import { Button } from "@/components/Button";
+import { VideoGridItem } from "@/components/VideoGridItems";
 
 export default function UserChannel() {
   const [activeTab, setActiveTab] = useState("videos");
@@ -12,9 +15,15 @@ export default function UserChannel() {
   const renderContent = () => {
     switch (activeTab) {
       case "videos":
-        return <div>Videos Content</div>;
+        return  (
+            <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+              {videos.map(video => (
+                <VideoGridItem key={video.id}  {...video}/>
+              ))}
+            </div>
+        )
       case "followers":
-        return <div>Followers Content</div>;
+        return <FollowersList />;
       case "playlists":
         return <div>Playlists Content</div>;
       case "community":
