@@ -8,7 +8,8 @@ import { Button } from "@/components/Button";
 import { VideoGridItem } from "@/components/VideoGridItems";
 import { PlaylistCardStack } from "@/components/PlaylistCardStack"
 import CommunitySection from "@/components/Announcements";
-
+import { getAllAnnouncements } from "@/gqlClient/Announcement";
+import { useQuery } from "urql";
 const dummyPlaylists = [
   {
     id: 1,
@@ -43,29 +44,31 @@ const dummyPlaylists = [
 export default function UserChannel() {
   const [activeTab, setActiveTab] = useState("videos");
 
+  const [{ data, fetching, error }, replay] = useQuery({ query: getAllAnnouncements });
+
   const Immage = `https://yt3.googleusercontent.com/NbeXiY_cA3_-6tujF7Ucf8QSxAy2z5x-My8UYiwyCW9truF3Yc0myEZQlTJeI8sSkc-xYX9KMQ=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj`;
 
   const renderContent = () => {
     switch (activeTab) {
       case "videos":
-        return  (
-            <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
-              {videos.map(video => (
-                <VideoGridItem key={video.id}  {...video}/>
-              ))}
-            </div>
+        return (
+          <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
+            {videos.map(video => (
+              <VideoGridItem key={video.id}  {...video} />
+            ))}
+          </div>
         )
       case "followers":
         return <FollowersList />;
       case "playlists":
         return (
-            <div className="p-2">
+          <div className="p-2">
             <PlaylistCardStack items={dummyPlaylists} />
           </div>
         )
       case "community":
         return (
-            <CommunitySection/>
+          <CommunitySection />
         )
       default:
         return null;
@@ -120,33 +123,29 @@ export default function UserChannel() {
         <div className="text-start text-gray-500 flex gap-6">
           <h2
             onClick={() => setActiveTab("videos")}
-            className={`cursor-pointer hover:text-black ${
-              activeTab === "videos" ? "text-black font-bold border-b-2 border-black" : ""
-            }`}
+            className={`cursor-pointer hover:text-black ${activeTab === "videos" ? "text-black font-bold border-b-2 border-black" : ""
+              }`}
           >
             Videos
           </h2>
           <h2
             onClick={() => setActiveTab("followers")}
-            className={`cursor-pointer hover:text-black ${
-              activeTab === "followers" ? "text-black font-bold border-b-2 border-black" : ""
-            }`}
+            className={`cursor-pointer hover:text-black ${activeTab === "followers" ? "text-black font-bold border-b-2 border-black" : ""
+              }`}
           >
             Followers
           </h2>
           <h2
             onClick={() => setActiveTab("playlists")}
-            className={`cursor-pointer hover:text-black ${
-              activeTab === "playlists" ? "text-black font-bold border-b-2 border-black" : ""
-            }`}
+            className={`cursor-pointer hover:text-black ${activeTab === "playlists" ? "text-black font-bold border-b-2 border-black" : ""
+              }`}
           >
             Playlists
           </h2>
           <h2
             onClick={() => setActiveTab("community")}
-            className={`cursor-pointer hover:text-black ${
-              activeTab === "community" ? "text-black font-bold border-b-2 border-black" : ""
-            }`}
+            className={`cursor-pointer hover:text-black ${activeTab === "community" ? "text-black font-bold border-b-2 border-black" : ""
+              }`}
           >
             Community
           </h2>
