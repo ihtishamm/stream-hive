@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider } from "@/contexts/sidebarContext";
+import GQLProvider from "./gqlProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -17,12 +18,14 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      
+
       <body className={inter.className}>
-      <SidebarProvider>
-        {children}
+        <SidebarProvider>
+          <GQLProvider>
+            {children}
+          </GQLProvider>
         </SidebarProvider>
-        </body>
+      </body>
     </html>
   );
 }
