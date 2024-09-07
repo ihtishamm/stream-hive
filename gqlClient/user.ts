@@ -15,3 +15,16 @@ mutation CreateUser($input: signInInput!) {
     name
   }
 }`
+
+
+export const me = gql`
+query Query {
+  me {
+    id
+    name
+    email
+    handle
+    image
+    backgroundImage
+  }
+}`
