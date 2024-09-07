@@ -1,5 +1,5 @@
 function generateUniqueChannelName(name: string, maxLength: number = 20): string {
-    const sanitizedName = name.replace(/[^a-zA-Z0-9]/g, '');
+    const sanitizedName = name && name.replace(/[^a-zA-Z0-9]/g, '');
 
     const randomNumber = Math.floor(Math.random() * 10000);
 

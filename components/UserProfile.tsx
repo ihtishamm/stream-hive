@@ -29,9 +29,6 @@ export function UserProfile() {
                 </Button>
             </DropdownMenuTrigger>
             {
-                fetching && <div>Loading...</div>
-            }
-            {
                 error && <div>Something went wrong</div>
             }
             <DropdownMenuContent className="w-56 mr-10">
