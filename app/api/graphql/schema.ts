@@ -19,13 +19,17 @@ const schema = `#graphql
     email: String!
     createdAt: String!
     token: String
+    description: String
+    handle: String
+   backgroundImage: String
+    image: String
     Announcements: [Announcement]!
     Followers: [User]!
     Followings: [User]!
     Video: [Video]!
     playlists: [Playlist]!
     }
-
+    
      type Video{
       id: ID!
       title: String!
