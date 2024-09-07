@@ -29,7 +29,7 @@ const schema = `#graphql
     Video: [Video]!
     playlists: [Playlist]!
     }
-    
+
      type Video{
       id: ID!
       title: String!
@@ -163,6 +163,9 @@ const schema = `#graphql
      addComment(input: CommentInput!): Comment!
      createPlaylist(input: CreatePlaylistWithVideoInput!): Playlist!
       addVideoToPlaylist(input: AddVideoToPlaylist!): PlaylistHasVideo!
+     
+
+
   }
 
 `

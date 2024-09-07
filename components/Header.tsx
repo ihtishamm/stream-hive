@@ -1,10 +1,11 @@
 "use client";
 import { ArrowLeft, Bell, Menu, Mic, Search, Upload, User } from "lucide-react";
-import { Button } from "../components/Button";
 import { useState, useEffect } from "react";
 import { useSidebarContext } from "@/contexts/sidebarContext";
 import { isAuth } from "@/lib/token";
 import { UserProfile } from "./UserProfile";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 export function PageHeader() {
   const [showFullWidthSearch, setShowFullWidthSearch] = useState(false);
@@ -45,9 +46,6 @@ export function PageHeader() {
             <Search />
           </Button>
         </div>
-        <Button type="button" size="icon" className="flex-shrink-0">
-          <Mic />
-        </Button>
       </form>
       <div
         className={`flex-shrink-0 md:gap-2 ${showFullWidthSearch ? "hidden" : "flex"
@@ -61,28 +59,18 @@ export function PageHeader() {
         >
           <Search />
         </Button>
-        <Button size="icon" variant="ghost" className="md:hidden">
-          <Mic />
-        </Button>
         <Button size="icon" variant="ghost">
           <Upload />
         </Button>
-        <Button size="icon" variant="ghost">
-          <Bell />
-        </Button>
-
 
         {isAuthenticated === null ? (
-          <Button size="icon" variant="ghost" disabled>
-            {/* You can put a spinner or placeholder here */}
-            Loading...
-          </Button>
+          null
         ) : isAuthenticated ? (
           <UserProfile />
         ) : (
-          <Button size="icon" variant="ghost">
-            Login
-          </Button>
+          <Link href="/signin">
+            <Button className="mr-4">Sign in</Button>
+          </Link>
         )}
       </div>
     </div>
@@ -106,9 +94,9 @@ export function PageHeaderFirstSection({
       <Button onClick={toggle} variant="ghost" size="icon">
         <Menu />
       </Button>
-      <a href="/">
+      <Link href="/">
         <img alt="Logo" className="h-6" />
-      </a>
+      </Link>
     </div>
   );
 }

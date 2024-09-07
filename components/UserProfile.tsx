@@ -1,3 +1,4 @@
+"use client";
 import { Button } from "@/components/ui/button"
 import {
     DropdownMenu,
@@ -14,12 +15,20 @@ import { me } from "@/gqlClient/user"
 import { useQuery } from "urql"
 import getInitials from "@/Utils/getInitials"
 import generateUniqueChannelName from "@/Utils/getUniqueChannelName"
-import { UserProfileSekelton } from "./skeltions/UserProfileSekeltion"
+import { logout } from "@/lib/token"
+import { useRouter } from "next/navigation"
 
 export function UserProfile() {
+
     const [{ data, fetching, error }, replay] = useQuery({
         query: me,
     })
+    const router = useRouter()
+
+    const logoutUser = async () => {
+        logout()
+        router.push('/signin')
+    }
 
 
     return (
@@ -47,7 +56,7 @@ export function UserProfile() {
                 </DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem>
-                    <h2 className=" font-semibold">Log out</h2>
+                    <h2 className=" font-semibold" onClick={logoutUser}>Log out</h2>
                 </DropdownMenuItem>
             </DropdownMenuContent>
         </DropdownMenu>

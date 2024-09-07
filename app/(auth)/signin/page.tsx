@@ -26,8 +26,8 @@ const SigninPage = () => {
 
         if (result.error) {
             setError("An error occurred. Please try again.")
-        } else if (result.data.createUser) {
-            setToken(result.data.createUser.token)
+        } else if (result.data.signIn) {
+            setToken(result.data.signIn.token)
             router.push('/')
         }
     }
