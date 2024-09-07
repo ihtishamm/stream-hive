@@ -14,6 +14,7 @@ import { me } from "@/gqlClient/user"
 import { useQuery } from "urql"
 import getInitials from "@/Utils/getInitials"
 import generateUniqueChannelName from "@/Utils/getUniqueChannelName"
+import { UserProfileSekelton } from "./skeltions/UserProfileSekeltion"
 
 export function UserProfile() {
     const [{ data, fetching, error }, replay] = useQuery({
@@ -28,9 +29,6 @@ export function UserProfile() {
                     <User />
                 </Button>
             </DropdownMenuTrigger>
-            {
-                error && <div>Something went wrong</div>
-            }
             <DropdownMenuContent className="w-56 mr-10">
                 <DropdownMenuLabel>
                     <div className="flex gap-3 mb-8">
