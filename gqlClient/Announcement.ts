@@ -35,3 +35,13 @@ export const userAnnoucements = gql`
   }
 }
 `
+
+export const createAnnouncement = gql`
+mutation Mutation($input: createAnnouncementInput!) {
+  createAnnouncement(input: $input) {
+    message
+    user {
+      name
+    }
+  }
+}`
