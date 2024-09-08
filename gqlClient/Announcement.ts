@@ -31,6 +31,7 @@ export const userAnnoucements = gql`
       image
       handle
       name
+      id
     }
   }
 }
@@ -44,4 +45,18 @@ mutation Mutation($input: createAnnouncementInput!) {
       name
     }
   }
+}`
+
+
+export const editAnnouncement = gql`
+ mutation Mutation($input: editAnnouncementInput!) {
+  editAnnouncement(input: $input) {
+    id
+    message
+  }
+}`
+
+export const deleteAnnouncement = gql`
+mutation Mutation($deleteAnnouncementId: ID!) {
+  deleteAnnouncement(id: $deleteAnnouncementId)
 }`

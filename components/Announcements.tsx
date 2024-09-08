@@ -34,6 +34,13 @@ const CommunitySection = ({ userId }: { userId: string }) => {
       console.error("Error creating announcement:", error);
     }
   };
+  const handleEdit = async () => {
+    await replay({ requestPolicy: "network-only" });
+  };
+
+  const handleDelete = async () => {
+    await replay({ requestPolicy: "network-only" });
+  };
 
   if (error) return <p>Error fetching announcements</p>;
   if (fetching) {
@@ -55,7 +62,11 @@ const CommunitySection = ({ userId }: { userId: string }) => {
       {data?.getUserAnnouncements?.length ?? 0 > 0 ? (
         <ul role="list" className="space-y-4">
           {data?.getUserAnnouncements?.map((announcement) => (
-            <AnnouncementItem key={announcement.id} announcement={announcement} />
+            <AnnouncementItem key={announcement.id} announcement={announcement}
+              currentUserId={currentUserId}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
+            />
           ))}
         </ul>
       ) : (

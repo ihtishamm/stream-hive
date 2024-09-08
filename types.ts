@@ -18,6 +18,7 @@ export type AnnouncementType = {
     name: string;
     handle: string;
     image: string;
+    id: string
   };
   createdAt: string;
   message: string;
