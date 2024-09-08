@@ -6,6 +6,8 @@ import { me } from "@/gqlClient/user";
 import AnnouncementItem from "./AnnouncementsItem";
 import CreateAnnouncementForm from "./CreateAnnouncement";
 import { UserAnnouncementsResponse } from "@/types"
+import Spinner from "./Spinner";
+import { AnnouncementSkeleton } from "./skeltions/AnnoucementSkelton";
 
 const CommunitySection = ({ userId }: { userId: string }) => {
   const [{ data, fetching, error }, replay] = useQuery<UserAnnouncementsResponse>({
@@ -33,14 +35,23 @@ const CommunitySection = ({ userId }: { userId: string }) => {
     }
   };
 
-  if (fetching) return <p>Loading...</p>;
   if (error) return <p>Error fetching announcements</p>;
+  if (fetching) {
+    return (
+      <div className="space-y-4">
+        <AnnouncementSkeleton />
+        <AnnouncementSkeleton />
+      </div>
+    );
+  }
 
   return (
     <div className="p-6">
       {currentUserId === userId && (
-        <CreateAnnouncementForm onPost={handlePost} isPosting={isPosting} />
+        isPosting ? <div className="mb-4"> <Spinner />  </div> :
+          <CreateAnnouncementForm onPost={handlePost} isPosting={isPosting} />
       )}
+
       {data?.getUserAnnouncements?.length ?? 0 > 0 ? (
         <ul role="list" className="space-y-4">
           {data?.getUserAnnouncements?.map((announcement) => (

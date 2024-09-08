@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { Button } from "./ui/button";
 
 type CreateAnnouncementFormProps = {
     onPost: (message: string) => void;
@@ -17,22 +18,22 @@ const CreateAnnouncementForm = ({ onPost, isPosting }: CreateAnnouncementFormPro
     };
 
     return (
-        <div className="mb-6 p-4 rounded-lg">
+        <div className="mb-6 p-4 rounded-lg shadow-md">
             <h2 className="text-lg font-semibold mb-2">Create an Announcement</h2>
             <textarea
-                className="w-full p-2 border border-gray-300 rounded-md"
+                className="w-full p-2 border border-gray-300 rounded-md mb-2"
                 rows={3}
                 placeholder="What's on your mind?"
                 value={newMessage}
                 onChange={(e) => setNewMessage(e.target.value)}
             />
-            <button
-                className="mt-2 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700"
+            <Button
+
                 onClick={handlePost}
                 disabled={isPosting}
             >
                 {isPosting ? 'Posting...' : 'Post'}
-            </button>
+            </Button>
         </div>
     );
 };
