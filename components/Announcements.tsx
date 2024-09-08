@@ -1,112 +1,78 @@
 "use client";
+import { userAnnoucements } from "@/gqlClient/Announcement";
+import { useQuery } from "urql";
+import getInitials from "@/Utils/getInitials";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import formatTime from "@/Utils/formatTimeAgoMomet";
+import { ThumbsDown, ThumbsUp } from "lucide-react";
 
-const dummyAnnouncements = [
-    {
-      id: "1",
-      user: {
-        name: "John Doe",
-        handle: "johndoe",
-        image: "https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj",
-      },
-      createdAt: "2024-08-30T12:34:56Z",
-      message: "This is the first announcement in the community!",
-      likes: 10,
-      dislikes: 2,
-      viewer: {
-        hasLiked: false,
-        hasDisliked: false,
-      },
-    },
-    {
-      id: "2",
-      user: {
-        name: "Jane Smith",
-        handle: "janesmith",
-        image: "https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj",
-      },
-      createdAt: "2024-08-29T09:22:18Z",
-      message: "Community updates coming soon! Stay tuned.",
-      likes: 25,
-      dislikes: 0,
-      viewer: {
-        hasLiked: true,
-        hasDisliked: false,
-      },
-    },
-  ];
-  
-
-import Image from "next/image";
-import { useState } from "react";
-
-const CommunitySection = () => {
-  const [announcements] = useState(dummyAnnouncements);
-
-  const handleLike = (id:string) => {
-    console.log(`Liked post with ID: ${id}`);
-    // Implement like logic here
+type Announcement = {
+  id: string;
+  user: {
+    name: string;
+    handle: string;
+    image: string;
   };
+  createdAt: string;
+  message: string;
+  dislikeCount: number;
+  likeCount: number;
+};
 
-  const handleDislike = (id:string) => {
-    console.log(`Disliked post with ID: ${id}`);
-    // Implement dislike logic here
-  };
+const CommunitySection = ({ userId }: { userId: string }) => {
+  const [{ data, fetching, error }] = useQuery({
+    query: userAnnoucements,
+    variables: { userid: userId },
+  });
+
+  if (fetching) return <p>Loading...</p>;
+  if (error) return <p>Error fetching announcements</p>;
 
   return (
-    <div className="p-2 border-red-300">
-      <ul role="list" className="divide-y divide-gray-200">
-        {announcements.map((announcement) => (
-          <li className="py-4" key={announcement.id}>
-            <div className="flex gap-4">
-              <Image
-                src={announcement.user.image}
-                alt={announcement.user.name}
-                width={40}
-                height={40}
-                className="rounded-full"
-              />
-              <div className="flex w-full flex-col">
-                <div className="flex items-center gap-2 text-xs">
-                  <p className="text-sm font-semibold text-gray-900">
-                    {announcement.user.name}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    @{announcement.user.handle}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {Date.now() - Number(announcement.createdAt)} days ago
-                  </p>
-                </div>
-                <p className="my-2 text-sm text-gray-600">
-                  {announcement.message}
-                </p>
-                <div className="flex items-center gap-4">
-                  <button
-                    onClick={() => handleLike(announcement.id)}
-                    className={`${
-                      announcement.viewer.hasLiked
-                        ? "text-blue-500"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    Like ({announcement.likes})
-                  </button>
-                  <button
-                    onClick={() => handleDislike(announcement.id)}
-                    className={`${
-                      announcement.viewer.hasDisliked
-                        ? "text-red-500"
-                        : "text-gray-500"
-                    }`}
-                  >
-                    Dislike ({announcement.dislikes})
-                  </button>
+    <div className="p-6">
+      {data?.getUserAnnouncements?.length > 0 ? (
+        <ul role="list" className="space-y-4">
+          {data.getUserAnnouncements.map((announcement: Announcement) => (
+            <li className="py-6 bg-gray-100 rounded-lg shadow-md" key={announcement.id}>
+              <div className="flex gap-4">
+
+                <Avatar>
+                  <AvatarImage src={announcement.user.image} alt="user profile pic" />
+                  <AvatarFallback>{getInitials(announcement.user.name)}</AvatarFallback>
+                </Avatar>
+
+                <div className="flex-1">
+                  <div className="flex items-center gap-2 text-sm">
+                    <p className="font-semibold text-gray-900">
+                      {announcement.user.name}
+                    </p>
+                    <p className="text-gray-400">
+                      {formatTime(parseInt(announcement.createdAt))}
+                    </p>
+                  </div>
+                  <p className="my-2 text-gray-700">{announcement.message}</p>
+                  <div className="flex gap-4 mt-2">
+                    <div className="flex items-center gap-1 text-sm">
+                      <button className="text-blue-600 hover:text-blue-800">
+                        <ThumbsUp className="h-4 w-4" />
+                      </button>
+                      <span>{announcement.likeCount}</span>
+                    </div>
+                    <div className="flex items-center gap-1 text-sm">
+                      <button className="text-red-600 hover:text-red-800">
+                        <ThumbsDown className="h-4 w-4" />
+                      </button>
+                      <span>{announcement.dislikeCount}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p className="text-gray-500">No announcements available.</p>
+      )}
     </div>
   );
 };

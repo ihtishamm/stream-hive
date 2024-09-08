@@ -9,14 +9,14 @@ import { Button } from "./ui/button";
 
 export function PageHeader() {
   const [showFullWidthSearch, setShowFullWidthSearch] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null); // Start with `null` to indicate loading state
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  // Ensure `isAuth()` is called only on the client side
+
   useEffect(() => {
-    // Simulating token check (it happens on the client only)
+
     const authStatus = isAuth();
     setIsAuthenticated(authStatus);
-  }, []); // Runs only once on the client side after the first render
+  }, []);
 
   return (
     <div className="flex gap-10 lg:gap-20 justify-between pt-2 mb-6 mx-4">

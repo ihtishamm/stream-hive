@@ -17,3 +17,21 @@ query GetAllAnnouncements {
     }
   }
 `
+
+
+export const userAnnoucements = gql`
+ query GetUserAnnouncements($userid: ID!) {
+  getUserAnnouncements(userid: $userid) {
+    id
+    likeCount
+    message
+    createdAt
+    dislikeCount
+    user {
+      image
+      handle
+      name
+    }
+  }
+}
+`
