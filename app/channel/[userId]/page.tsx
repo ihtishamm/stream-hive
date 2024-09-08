@@ -8,8 +8,7 @@ import { Button } from "@/components/Button";
 import { VideoGridItem } from "@/components/VideoGridItems";
 import { PlaylistCardStack } from "@/components/PlaylistCardStack"
 import CommunitySection from "@/components/Announcements";
-import { getAllAnnouncements } from "@/gqlClient/Announcement";
-import { useQuery } from "urql";
+import { usePathname } from "next/navigation";
 const dummyPlaylists = [
   {
     id: 1,
@@ -43,8 +42,11 @@ const dummyPlaylists = [
 
 export default function UserChannel() {
   const [activeTab, setActiveTab] = useState("videos");
+  const pathname = usePathname();
+  const userId = pathname.split("/")[2];
+  console.log(userId);
 
-  const [{ data, fetching, error }, replay] = useQuery({ query: getAllAnnouncements });
+
 
   const Immage = `https://yt3.googleusercontent.com/NbeXiY_cA3_-6tujF7Ucf8QSxAy2z5x-My8UYiwyCW9truF3Yc0myEZQlTJeI8sSkc-xYX9KMQ=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj`;
 
@@ -68,7 +70,7 @@ export default function UserChannel() {
         )
       case "community":
         return (
-          <CommunitySection />
+          <CommunitySection userId={userId} />
         )
       default:
         return null;

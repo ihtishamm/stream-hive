@@ -19,6 +19,10 @@ const schema = `#graphql
     email: String!
     createdAt: String!
     token: String
+    description: String
+    handle: String
+   backgroundImage: String
+    image: String
     Announcements: [Announcement]!
     Followers: [User]!
     Followings: [User]!
@@ -51,6 +55,8 @@ const schema = `#graphql
         user: User!
         likeCount: Int!
         dislikeCount: Int!
+         hasLiked: Boolean!
+        hasDisliked: Boolean! 
      }
          type Playlist {
         id: ID!
@@ -68,8 +74,8 @@ const schema = `#graphql
 
   type AnnouncementEngagement {
   user: User!
-  announcement: Announcement!
-  engagementType: EngagementType!
+  announcement: Announcement
+  engagementType: EngagementType
   createdAt: String!
 }
 
@@ -159,6 +165,9 @@ const schema = `#graphql
      addComment(input: CommentInput!): Comment!
      createPlaylist(input: CreatePlaylistWithVideoInput!): Playlist!
       addVideoToPlaylist(input: AddVideoToPlaylist!): PlaylistHasVideo!
+     
+
+
   }
 
 `

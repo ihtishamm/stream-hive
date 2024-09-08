@@ -1,19 +1,29 @@
 "use client";
 import { ArrowLeft, Bell, Menu, Mic, Search, Upload, User } from "lucide-react";
-import { Button } from "../components/Button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSidebarContext } from "@/contexts/sidebarContext";
+import { isAuth } from "@/lib/token";
+import { UserProfile } from "./UserProfile";
+import Link from "next/link";
+import { Button } from "./ui/button";
 
 export function PageHeader() {
   const [showFullWidthSearch, setShowFullWidthSearch] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
+
+
+  useEffect(() => {
+
+    const authStatus = isAuth();
+    setIsAuthenticated(authStatus);
+  }, []);
 
   return (
     <div className="flex gap-10 lg:gap-20 justify-between pt-2 mb-6 mx-4">
       <PageHeaderFirstSection hidden={showFullWidthSearch} />
       <form
-        className={`flex items-center gap-4 flex-grow justify-center ${
-          showFullWidthSearch ? "flex" : "hidden md:flex"
-        }`}
+        className={`flex items-center gap-4 flex-grow justify-center ${showFullWidthSearch ? "flex" : "hidden md:flex"
+          }`}
       >
         {showFullWidthSearch && (
           <Button
@@ -36,14 +46,10 @@ export function PageHeader() {
             <Search />
           </Button>
         </div>
-        <Button type="button" size="icon" className="flex-shrink-0">
-          <Mic />
-        </Button>
       </form>
       <div
-        className={`flex-shrink-0 md:gap-2 ${
-          showFullWidthSearch ? "hidden" : "flex"
-        }`}
+        className={`flex-shrink-0 md:gap-2 ${showFullWidthSearch ? "hidden" : "flex"
+          }`}
       >
         <Button
           onClick={() => setShowFullWidthSearch(true)}
@@ -53,18 +59,19 @@ export function PageHeader() {
         >
           <Search />
         </Button>
-        <Button size="icon" variant="ghost" className="md:hidden">
-          <Mic />
-        </Button>
         <Button size="icon" variant="ghost">
           <Upload />
         </Button>
-        <Button size="icon" variant="ghost">
-          <Bell />
-        </Button>
-        <Button size="icon" variant="ghost">
-          <User />
-        </Button>
+
+        {isAuthenticated === null ? (
+          null
+        ) : isAuthenticated ? (
+          <UserProfile />
+        ) : (
+          <Link href="/signin">
+            <Button className="mr-4">Sign in</Button>
+          </Link>
+        )}
       </div>
     </div>
   );
@@ -81,16 +88,15 @@ export function PageHeaderFirstSection({
 
   return (
     <div
-      className={`flex items-center gap-4 flex-shrink-0 ${
-        hidden ? "hidden" : "flex"
-      }`}
+      className={`flex items-center gap-4 flex-shrink-0 ${hidden ? "hidden" : "flex"
+        }`}
     >
       <Button onClick={toggle} variant="ghost" size="icon">
         <Menu />
       </Button>
-      <a href="/">
-        <img  alt="Logo" className="h-6" />
-      </a>
+      <Link href="/">
+        <img alt="Logo" className="h-6" />
+      </Link>
     </div>
   );
 }
