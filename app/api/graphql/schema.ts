@@ -73,7 +73,7 @@ const schema = `#graphql
   type AnnouncementEngagement {
   user: User!
   announcement: Announcement!
-  engagementType: EngagementType!
+  engagementType: EngagementType
   createdAt: String!
 }
 

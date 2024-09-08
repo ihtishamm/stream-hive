@@ -5,7 +5,7 @@ import { ThumbsDown, ThumbsUp, MoreVertical } from "lucide-react";
 import { useState } from "react";
 import { useMutation } from "urql";
 import { editAnnouncement, deleteAnnouncement } from "@/gqlClient/Announcement";
-import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "./ui/dropdown-menu"; // ShadCN UI
+import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 
 type AnnouncementProps = {
@@ -56,7 +56,7 @@ const AnnouncementItem = ({ announcement, currentUserId, onEdit, onDelete }: Ann
 
     const handleCancelEdit = () => {
         setIsEditing(false);
-        setNewMessage(announcement.message); // Reset message if canceled
+        setNewMessage(announcement.message);
     };
 
     return (
