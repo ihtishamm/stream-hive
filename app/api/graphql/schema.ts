@@ -55,6 +55,8 @@ const schema = `#graphql
         user: User!
         likeCount: Int!
         dislikeCount: Int!
+         hasLiked: Boolean!
+        hasDisliked: Boolean! 
      }
          type Playlist {
         id: ID!
@@ -72,7 +74,7 @@ const schema = `#graphql
 
   type AnnouncementEngagement {
   user: User!
-  announcement: Announcement!
+  announcement: Announcement
   engagementType: EngagementType
   createdAt: String!
 }

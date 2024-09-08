@@ -27,6 +27,8 @@ export const userAnnoucements = gql`
     message
     createdAt
     dislikeCount
+    hasDisliked
+        hasLiked
     user {
       image
       handle
@@ -59,4 +61,26 @@ export const editAnnouncement = gql`
 export const deleteAnnouncement = gql`
 mutation Mutation($deleteAnnouncementId: ID!) {
   deleteAnnouncement(id: $deleteAnnouncementId)
+}`
+
+export const likeAnnouncement = gql`
+mutation Mutation($input: AnnouncementEngagementInput!) {
+  likeAnnouncement(input: $input) {
+    engagementType
+    announcement {
+      likeCount
+      dislikeCount
+    }
+  }
+}`
+
+export const dislikeAnnouncement = gql`
+mutation Mutation($input: AnnouncementEngagementInput!) {
+  dislikeAnnouncement(input: $input) {
+    engagementType
+    announcement {
+      dislikeCount
+      likeCount
+    }
+  }
 }`

@@ -368,44 +368,50 @@ const resolvers = {
           extensions: { code: '401' },
         });
       }
+
+      // Find if an engagement already exists for this user and announcement
       const existedEngagement = await prisma.announcementEngagement.findFirst({
         where: {
           userId: ctx.user.id,
-          announcementId: args.input.announcementId
-        }
+          announcementId: args.input.announcementId,
+        },
       });
+
       if (existedEngagement) {
+        // If it's already disliked, remove the engagement (undo dislike)
         if (existedEngagement.engagementType === 'DISLIKE') {
           await prisma.announcementEngagement.delete({
             where: {
-              userId_announcementId: { userId: ctx.user.id, announcementId: args.input.announcementId }
-            }
+              userId_announcementId: { userId: ctx.user.id, announcementId: args.input.announcementId },
+            },
           });
           return "undisliked";
         }
+        // If it's a like, update it to dislike
         else if (existedEngagement.engagementType === 'LIKE') {
           await prisma.announcementEngagement.update({
             where: {
-              userId_announcementId: { userId: ctx.user.id, announcementId: args.input.announcementId }
+              userId_announcementId: { userId: ctx.user.id, announcementId: args.input.announcementId },
             },
             data: {
-              engagementType: 'DISLIKE'
-            }
+              engagementType: 'DISLIKE',
+            },
           });
+          return "disliked";
         }
       }
-
       return await prisma.announcementEngagement.create({
         data: {
           userId: ctx.user.id,
           announcementId: args.input.announcementId,
-          engagementType: 'DISLIKE'
+          engagementType: 'DISLIKE',
         },
         include: {
-          announcement: true
-        }
+          announcement: true,
+        },
       });
     },
+
     uploadVideo: async (_: any, { input }: any, ctx: GQLContext) => {
       try {
         if (!ctx.user) {
@@ -635,7 +641,33 @@ const resolvers = {
         }
       })
       return count;
-    }
+    },
+    hasLiked: async (parent: any, _args: any, ctx: GQLContext) => {
+      if (!ctx.user) {
+        return false;
+      }
+      const engagement = await prisma.announcementEngagement.findFirst({
+        where: {
+          userId: ctx.user.id,
+          announcementId: parent.id,
+          engagementType: 'LIKE'
+        }
+      });
+      return Boolean(engagement);
+    },
+    hasDisliked: async (parent: any, _args: any, ctx: GQLContext) => {
+      if (!ctx.user) {
+        return false;
+      }
+      const engagement = await prisma.announcementEngagement.findFirst({
+        where: {
+          userId: ctx.user.id,
+          announcementId: parent.id,
+          engagementType: 'DISLIKE'
+        }
+      });
+      return Boolean(engagement);
+    },
   },
   AnnouncementEngagement: {
     announcement: async (parent: any, _args: any) => {

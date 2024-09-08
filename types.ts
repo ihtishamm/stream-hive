@@ -24,6 +24,8 @@ export type AnnouncementType = {
   message: string;
   dislikeCount: number;
   likeCount: number;
+  hasLiked: boolean;
+  hasDisliked: boolean;
 };
 
 export type UserAnnouncementsResponse = {

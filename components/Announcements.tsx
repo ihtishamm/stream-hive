@@ -1,4 +1,4 @@
-// components/CommunitySection.tsx
+
 import { userAnnoucements, createAnnouncement } from "@/gqlClient/Announcement";
 import { useMutation, useQuery } from "urql";
 import { me } from "@/gqlClient/user";
