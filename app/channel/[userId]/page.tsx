@@ -4,11 +4,17 @@ import { videos } from "@/dummy-data/Home";
 import { subscriptions } from "@/dummy-data/Sidebar";
 import { useState } from "react";
 import FollowersList from "@/components/follwerList";
-import { Button } from "@/components/Button";
 import { VideoGridItem } from "@/components/VideoGridItems";
 import { PlaylistCardStack } from "@/components/PlaylistCardStack"
 import CommunitySection from "@/components/Announcements";
 import { usePathname } from "next/navigation";
+import { useQuery } from "urql";
+import { getUserById } from "@/gqlClient/user";
+import { User, userResponse } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import getInitials from "@/Utils/getInitials";
+import { UserRoundPlus } from "lucide-react";
 const dummyPlaylists = [
   {
     id: 1,
@@ -46,6 +52,11 @@ export default function UserChannel() {
   const userId = pathname.split("/")[2];
   console.log(userId);
 
+  const [{ data, fetching, error }] = useQuery<userResponse>({
+    query: getUserById,
+    variables: { userId },
+  });
+
 
 
   const Immage = `https://yt3.googleusercontent.com/NbeXiY_cA3_-6tujF7Ucf8QSxAy2z5x-My8UYiwyCW9truF3Yc0myEZQlTJeI8sSkc-xYX9KMQ=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj`;
@@ -81,42 +92,44 @@ export default function UserChannel() {
     <div className="min-h-screen w-full">
       <div className="gap-4">
         <div className="px-2 md:px-8 py-2 w-full rounded-lg">
-          <Image
-            src={Immage}
-            width={1707}
-            height={300}
-            objectFit="cover"
-            className="rounded-lg"
-            alt="Channel Banner"
-          />
+
+          {
+            data?.getUserById.backgroundImage && (
+              <Image
+                src={data?.getUserById.backgroundImage}
+                width={1707}
+                height={300}
+                objectFit="cover"
+                className="rounded-lg"
+                alt="Channel Banner"
+              />
+            )
+          }
+
         </div>
 
         <div className="flex flex-col md:flex-row p-8 gap-6">
           <div className="flex-shrink-0">
-            <Image
-              src={subscriptions[0].imgUrl}
-              width={176}
-              height={176}
-              objectFit="cover"
-              className="rounded-full"
-              alt="Profile Image"
-            />
+
+            <Avatar className="w-[176px] h-[176px]">
+              <AvatarImage src={data?.getUserById.image ?? ''} alt="user profile pic" />
+              <AvatarFallback className="text-2xl font-bold">{getInitials(data?.getUserById.name ?? '')}</AvatarFallback>
+            </Avatar>
           </div>
 
           <div>
-            <h1 className="text-2xl font-bold">TeenWolf Gaming</h1>
+            <h1 className="text-2xl font-bold">{data?.getUserById.name}</h1>
             <div className="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-2 mt-2">
-              <span className="text-sm text-gray-600">@TeemWrokgagmig</span>
+              <span className="text-sm text-gray-600">@{data?.getUserById.handle ?? "tesingdsa"}</span>
               <span className="hidden lg:inline-block">•</span>
-              <span className="text-sm text-gray-600">9.9k Subscribers</span>
-              <span className="hidden lg:inline-block">•</span>
-              <span className="text-sm text-gray-600">43 videos</span>
+              <span className="text-sm text-gray-600">{data?.getUserById.videosCount} videos</span>
             </div>
+            <span className="text-sm text-gray-600">{data?.getUserById.followersCount} Followers</span> • <span className="text-sm text-gray-600">{data?.getUserById.followingCount} Following</span>
             <p className="mt-4 text-gray-700">
-              Hey, this is my YouTube channel. Make sure to subscribe!
+              {data?.getUserById.description}
             </p>
 
-            <Button className="mt-4">Subscribe</Button>
+            <Button className="mt-4 flex items-center gap-2 px-4" variant="default"><UserRoundPlus />Follow</Button>
           </div>
         </div>
       </div>

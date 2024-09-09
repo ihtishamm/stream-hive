@@ -1,11 +1,10 @@
-
+import { useState, useEffect } from 'react';
 import { userAnnoucements, createAnnouncement } from "@/gqlClient/Announcement";
 import { useMutation, useQuery } from "urql";
 import { me } from "@/gqlClient/user";
-
 import AnnouncementItem from "./AnnouncementsItem";
 import CreateAnnouncementForm from "./CreateAnnouncement";
-import { UserAnnouncementsResponse } from "@/types"
+import { UserAnnouncementsResponse } from "@/types";
 import Spinner from "./Spinner";
 import { AnnouncementSkeleton } from "./skeltions/AnnoucementSkelton";
 
@@ -24,6 +23,14 @@ const CommunitySection = ({ userId }: { userId: string }) => {
   const [result, createNewAnnouncement] = useMutation(createAnnouncement);
   const { fetching: isPosting } = result;
 
+  const [initialFetchComplete, setInitialFetchComplete] = useState(false);
+
+  useEffect(() => {
+    if (!fetching && !initialFetchComplete) {
+      setInitialFetchComplete(true);
+    }
+  }, [fetching, initialFetchComplete]);
+
   const handlePost = async (message: string) => {
     try {
       const result = await createNewAnnouncement({ input: { message } });
@@ -34,6 +41,7 @@ const CommunitySection = ({ userId }: { userId: string }) => {
       console.error("Error creating announcement:", error);
     }
   };
+
   const handleEdit = async () => {
     await replay({ requestPolicy: "network-only" });
   };
@@ -43,7 +51,7 @@ const CommunitySection = ({ userId }: { userId: string }) => {
   };
 
   if (error) return <p>Error fetching announcements</p>;
-  if (fetching) {
+  if (!initialFetchComplete) {
     return (
       <div className="space-y-4">
         <AnnouncementSkeleton />

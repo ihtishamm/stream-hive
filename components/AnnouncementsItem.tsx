@@ -114,7 +114,7 @@ const AnnouncementItem = ({ announcement, currentUserId, onEdit, onDelete }: Ann
                         </Avatar>
                         <div className="flex-1">
                             <div className="flex justify-between items-center">
-                                <div>
+                                <div className="flex gap-3">
                                     <p className="font-semibold text-gray-900">{announcement.user.name}</p>
                                     <p className="text-gray-400 text-sm">{formatTime(parseInt(announcement.createdAt))}</p>
                                 </div>

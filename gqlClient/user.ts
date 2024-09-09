@@ -28,3 +28,18 @@ query Query {
     backgroundImage
   }
 }`
+
+export const getUserById = gql`
+query Query($userId: ID!) {
+  getUserById(userId: $userId) {
+    name
+    image
+    id
+    handle
+    description
+    backgroundImage
+    videosCount
+    followingCount
+    followersCount
+  }
+}`
