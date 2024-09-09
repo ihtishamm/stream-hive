@@ -22,6 +22,7 @@ export type User = {
   videosCount: number;
   followingCount: number;
   followersCount: number;
+  hasFollowed: boolean;
 };
 export type userResponse = {
   getUserById: User;

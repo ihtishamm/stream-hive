@@ -2,20 +2,20 @@
 import Image from "next/image";
 import { videos } from "@/dummy-data/Home";
 import { subscriptions } from "@/dummy-data/Sidebar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import FollowersList from "@/components/follwerList";
 import { VideoGridItem } from "@/components/VideoGridItems";
 import { PlaylistCardStack } from "@/components/PlaylistCardStack"
 import CommunitySection from "@/components/Announcements";
 import { usePathname } from "next/navigation";
-import { useQuery } from "urql";
-import { getUserById } from "@/gqlClient/user";
+import { useMutation, useQuery } from "urql";
+import { getUserById, me } from "@/gqlClient/user";
 import { User, userResponse } from "@/types";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import getInitials from "@/Utils/getInitials";
-import { UserRoundPlus } from "lucide-react";
-import { Skeleton } from "@/components/ui/skeleton";
+import { UserRoundCheck, UserRoundPlus } from "lucide-react";
+import { followUser } from "@/gqlClient/user";
 import ChannelSkeleton from "@/components/skeltions/channelSkelton";
 const dummyPlaylists = [
   {
@@ -52,14 +52,41 @@ export default function UserChannel() {
   const [activeTab, setActiveTab] = useState("videos");
   const pathname = usePathname();
   const userId = pathname.split("/")[2];
-  console.log(userId);
+  const [initialFetchComplete, setInitialFetchComplete] = useState(false);
 
-  const [{ data, fetching, error }] = useQuery<userResponse>({
+
+
+  const [{ data, fetching, error }, replay] = useQuery<userResponse>({
     query: getUserById,
     variables: { userId },
   });
+  const [{ data: meData, error: meError }] = useQuery({
+    query: me,
+  });
 
-  if (fetching) {
+  const currentUserId = meData?.me?.id;
+
+  useEffect(() => {
+    if (!fetching && !initialFetchComplete) {
+      setInitialFetchComplete(true);
+    }
+  }, [fetching, initialFetchComplete]);
+
+  const [result, followUserMutation] = useMutation(followUser);
+  const { fetching: refetch } = result;
+
+  const handleFollow = async () => {
+    try {
+      const result = await followUserMutation({ input: { followingId: userId } });
+      if (result.data) {
+        await replay({ requestPolicy: 'network-only' })
+      }
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
+  };
+
+  if (!initialFetchComplete) {
     return (
       <ChannelSkeleton />
     );
@@ -67,6 +94,8 @@ export default function UserChannel() {
   if (error) {
     return <p>Error fetching user</p>;
   }
+
+  const isFollowing = data?.getUserById.hasFollowed;
 
 
   const Immage = `https://yt3.googleusercontent.com/NbeXiY_cA3_-6tujF7Ucf8QSxAy2z5x-My8UYiwyCW9truF3Yc0myEZQlTJeI8sSkc-xYX9KMQ=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj`;
@@ -91,7 +120,7 @@ export default function UserChannel() {
         )
       case "community":
         return (
-          <CommunitySection userId={userId} />
+          <CommunitySection userId={userId} currentUser={currentUserId} />
         )
       default:
         return null;
@@ -139,7 +168,23 @@ export default function UserChannel() {
               {data?.getUserById.description}
             </p>
 
-            <Button className="mt-4 flex items-center gap-2 px-4" variant="default"><UserRoundPlus />Follow</Button>
+
+            {currentUserId !== userId &&
+              (
+                isFollowing ? (
+                  <Button className="mt-4 flex items-center gap-2 px-4 bg-red-500" variant="default" onClick={handleFollow} disabled={refetch}>
+                    <UserRoundCheck />Following
+                  </Button>
+                ) : (
+                  <Button className="mt-4 flex items-center gap-2 px-4" variant="default" onClick={handleFollow} disabled={refetch}>
+                    <UserRoundPlus />Follow
+                  </Button>
+                )
+              )
+            }
+
+
+
           </div>
         </div>
       </div>

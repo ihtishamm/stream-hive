@@ -275,10 +275,15 @@ const resolvers = {
       });
 
       if (existingFollowEngagement) {
-        throw new GraphQLError("You are already following this user", {
-          extensions: { code: '401' },
+        await prisma.followEngagement.delete({
+          where: {
+            followerId_followingId: { followerId: ctx.user.id, followingId: args.input.followingId },
+          },
         });
-      }
+        return "unfollowed";
+
+
+      };
 
       const newFollowEngagement = await prisma.followEngagement.create({
         data: {
@@ -294,40 +299,7 @@ const resolvers = {
 
       return newFollowEngagement;
     },
-    unfollowUser: async (_: any, args: { input: { followingId: string } }, ctx: GQLContext) => {
 
-      if (!ctx.user) {
-        throw new GraphQLError("Unauthorized", {
-          extensions: { code: '401' },
-        });
-      }
-
-      if (ctx.user.id === args.input.followingId) {
-        throw new GraphQLError("you can't unfollow yourself", {
-          extensions: { code: '401' },
-        });
-      }
-
-      const followEngagement = await prisma.followEngagement.findFirst({
-        where: {
-          followerId: ctx.user.id,
-          followingId: args.input.followingId,
-        },
-      });
-
-      if (!followEngagement) {
-        throw new GraphQLError("you are not following this user", {
-          extensions: { code: '401' },
-        });
-      }
-
-      await prisma.followEngagement.delete({
-        where: {
-          followerId_followingId: { followerId: ctx.user.id, followingId: args.input.followingId },
-        },
-      });
-      return args.input.followingId;
-    },
     likeAnnouncement: async (_: any, args: { input: { announcementId: string } }, ctx: GQLContext) => {
       if (!ctx.user) {
         throw new GraphQLError("Unauthorized", {
@@ -605,6 +577,19 @@ const resolvers = {
 
 
   User: {
+    hasFollowed: async (parent: any, _args: any, ctx: GQLContext) => {
+      if (!ctx.user) {
+        return false
+      }
+      const followEngagement = await prisma.followEngagement.findFirst({
+        where: {
+          followerId: ctx.user.id,
+          followingId: parent.id,
+          engagementType: 'FOLLOW',
+        },
+      });
+      return Boolean(followEngagement);
+    },
     followersCount: async (parent: any) => {
       const count = await prisma.followEngagement.count({
         where: {

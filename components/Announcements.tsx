@@ -8,17 +8,11 @@ import { UserAnnouncementsResponse } from "@/types";
 import Spinner from "./Spinner";
 import { AnnouncementSkeleton } from "./skeltions/AnnoucementSkelton";
 
-const CommunitySection = ({ userId }: { userId: string }) => {
+const CommunitySection = ({ userId, currentUser }: { userId: string, currentUser: string }) => {
   const [{ data, fetching, error }, replay] = useQuery<UserAnnouncementsResponse>({
     query: userAnnoucements,
     variables: { userid: userId },
   });
-
-  const [{ data: meData, error: meError }] = useQuery({
-    query: me,
-  });
-
-  const currentUserId = meData?.me?.id;
 
   const [result, createNewAnnouncement] = useMutation(createAnnouncement);
   const { fetching: isPosting } = result;
@@ -62,7 +56,7 @@ const CommunitySection = ({ userId }: { userId: string }) => {
 
   return (
     <div className="p-6">
-      {currentUserId === userId && (
+      {currentUser === userId && (
         isPosting ? <div className="mb-4"> <Spinner />  </div> :
           <CreateAnnouncementForm onPost={handlePost} isPosting={isPosting} />
       )}
@@ -71,7 +65,7 @@ const CommunitySection = ({ userId }: { userId: string }) => {
         <ul role="list" className="space-y-4">
           {data?.getUserAnnouncements?.map((announcement) => (
             <AnnouncementItem key={announcement.id} announcement={announcement}
-              currentUserId={currentUserId}
+              currentUserId={currentUser}
               onEdit={handleEdit}
               onDelete={handleDelete}
             />

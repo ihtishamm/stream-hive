@@ -41,5 +41,13 @@ query Query($userId: ID!) {
     videosCount
     followingCount
     followersCount
+    hasFollowed
+  }
+}`
+
+export const followUser = gql`
+mutation Mutation($input: FollowInput!) {
+  followUser(input: $input) {
+    engagementType
   }
 }`
