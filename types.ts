@@ -11,7 +11,22 @@ export type SignUpInput = {
   email: string;
   password: string;
 };
-
+export type User = {
+  id: string;
+  name: string;
+  email: string;
+  handle: string | null;
+  image: string | null;
+  backgroundImage: string | null;
+  description: string | null;
+  videosCount: number;
+  followingCount: number;
+  followersCount: number;
+  hasFollowed: boolean;
+};
+export type userResponse = {
+  getUserById: User;
+};
 export type AnnouncementType = {
   id: string;
   user: {

@@ -28,6 +28,10 @@ const schema = `#graphql
     Followings: [User]!
     Video: [Video]!
     playlists: [Playlist]!
+    videosCount: Int!
+    followersCount: Int!
+    followingCount: Int!
+    hasFollowed: Boolean
     }
 
      type Video{
@@ -81,7 +85,7 @@ const schema = `#graphql
 
     
       type FollowEngagement {
-      engagementType: EngagementType!
+      engagementType: EngagementType
        createdAt: String!
        follower: User!       
        following: User!         
@@ -140,6 +144,7 @@ const schema = `#graphql
 
  type Query {
      me: User
+      getUserById(userId: ID!): User!
      getAllAnnouncements: [Announcement!]!
      getUserAnnouncements(userid: ID!): [Announcement!]!
      getUserFollowers(userId: ID!): [User!]!
@@ -158,7 +163,6 @@ const schema = `#graphql
     editAnnouncement(input: editAnnouncementInput!): Announcement!
     deleteAnnouncement(id: ID!): ID!
     followUser(input: FollowInput!): FollowEngagement!
-    unfollowUser(input: FollowInput!): ID!
     likeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
     dislikeAnnouncement(input: AnnouncementEngagementInput!): AnnouncementEngagement!
     uploadVideo(input: VideoInput!): Video!

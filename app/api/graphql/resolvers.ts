@@ -4,6 +4,7 @@ import { GraphQLError, } from "graphql";
 import prisma from "@/lib/db";
 import { GraphQLUpload } from "graphql-upload-ts";
 import cloudinary from "@/lib/Cloudinary";
+import { videos } from "@/dummy-data/Home";
 
 type SignInArgs = {
   input: SignInInput;
@@ -18,6 +19,19 @@ const resolvers = {
   Query: {
     me: async (_: any, __: any, ctx: GQLContext) => {
       return ctx.user
+    },
+    getUserById: async (_: any, args: { userId: string }) => {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: args.userId },
+        });
+        if (!user) {
+          throw new Error('User not found');
+        }
+        return user;
+      } catch (error) {
+        throw new Error(`Error fetching user`);
+      }
     },
     getAllAnnouncements: async () => {
       return await prisma.announcement.findMany({
@@ -261,10 +275,15 @@ const resolvers = {
       });
 
       if (existingFollowEngagement) {
-        throw new GraphQLError("You are already following this user", {
-          extensions: { code: '401' },
+        await prisma.followEngagement.delete({
+          where: {
+            followerId_followingId: { followerId: ctx.user.id, followingId: args.input.followingId },
+          },
         });
-      }
+        return "unfollowed";
+
+
+      };
 
       const newFollowEngagement = await prisma.followEngagement.create({
         data: {
@@ -280,40 +299,7 @@ const resolvers = {
 
       return newFollowEngagement;
     },
-    unfollowUser: async (_: any, args: { input: { followingId: string } }, ctx: GQLContext) => {
 
-      if (!ctx.user) {
-        throw new GraphQLError("Unauthorized", {
-          extensions: { code: '401' },
-        });
-      }
-
-      if (ctx.user.id === args.input.followingId) {
-        throw new GraphQLError("you can't unfollow yourself", {
-          extensions: { code: '401' },
-        });
-      }
-
-      const followEngagement = await prisma.followEngagement.findFirst({
-        where: {
-          followerId: ctx.user.id,
-          followingId: args.input.followingId,
-        },
-      });
-
-      if (!followEngagement) {
-        throw new GraphQLError("you are not following this user", {
-          extensions: { code: '401' },
-        });
-      }
-
-      await prisma.followEngagement.delete({
-        where: {
-          followerId_followingId: { followerId: ctx.user.id, followingId: args.input.followingId },
-        },
-      });
-      return args.input.followingId;
-    },
     likeAnnouncement: async (_: any, args: { input: { announcementId: string } }, ctx: GQLContext) => {
       if (!ctx.user) {
         throw new GraphQLError("Unauthorized", {
@@ -591,6 +577,45 @@ const resolvers = {
 
 
   User: {
+    hasFollowed: async (parent: any, _args: any, ctx: GQLContext) => {
+      if (!ctx.user) {
+        return false
+      }
+      const followEngagement = await prisma.followEngagement.findFirst({
+        where: {
+          followerId: ctx.user.id,
+          followingId: parent.id,
+          engagementType: 'FOLLOW',
+        },
+      });
+      return Boolean(followEngagement);
+    },
+    followersCount: async (parent: any) => {
+      const count = await prisma.followEngagement.count({
+        where: {
+          followingId: parent.id,
+          engagementType: 'FOLLOW',
+        },
+      });
+      return count;
+    },
+    followingCount: async (parent: any) => {
+      const count = await prisma.followEngagement.count({
+        where: {
+          followerId: parent.id,
+          engagementType: 'FOLLOW',
+        },
+      });
+      return count;
+    },
+    videosCount: async (parent: any) => {
+      const count = await prisma.video.count({
+        where: {
+          userId: parent.id,
+        },
+      });
+      return count;
+    },
     Followers: async (parent: any) => {
       const followers = await prisma.followEngagement.findMany({
         where: {

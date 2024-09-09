@@ -28,3 +28,26 @@ query Query {
     backgroundImage
   }
 }`
+
+export const getUserById = gql`
+query Query($userId: ID!) {
+  getUserById(userId: $userId) {
+    name
+    image
+    id
+    handle
+    description
+    backgroundImage
+    videosCount
+    followingCount
+    followersCount
+    hasFollowed
+  }
+}`
+
+export const followUser = gql`
+mutation Mutation($input: FollowInput!) {
+  followUser(input: $input) {
+    engagementType
+  }
+}`
