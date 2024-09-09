@@ -28,6 +28,9 @@ const schema = `#graphql
     Followings: [User]!
     Video: [Video]!
     playlists: [Playlist]!
+    videosCount: Int!
+    followersCount: Int!
+    followingCount: Int!
     }
 
      type Video{
@@ -140,6 +143,7 @@ const schema = `#graphql
 
  type Query {
      me: User
+      getUserById(userId: ID!): User!
      getAllAnnouncements: [Announcement!]!
      getUserAnnouncements(userid: ID!): [Announcement!]!
      getUserFollowers(userId: ID!): [User!]!

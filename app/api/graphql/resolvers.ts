@@ -4,6 +4,7 @@ import { GraphQLError, } from "graphql";
 import prisma from "@/lib/db";
 import { GraphQLUpload } from "graphql-upload-ts";
 import cloudinary from "@/lib/Cloudinary";
+import { videos } from "@/dummy-data/Home";
 
 type SignInArgs = {
   input: SignInInput;
@@ -18,6 +19,19 @@ const resolvers = {
   Query: {
     me: async (_: any, __: any, ctx: GQLContext) => {
       return ctx.user
+    },
+    getUserById: async (_: any, args: { userId: string }) => {
+      try {
+        const user = await prisma.user.findUnique({
+          where: { id: args.userId },
+        });
+        if (!user) {
+          throw new Error('User not found');
+        }
+        return user;
+      } catch (error) {
+        throw new Error(`Error fetching user`);
+      }
     },
     getAllAnnouncements: async () => {
       return await prisma.announcement.findMany({
@@ -591,6 +605,32 @@ const resolvers = {
 
 
   User: {
+    followersCount: async (parent: any) => {
+      const count = await prisma.followEngagement.count({
+        where: {
+          followingId: parent.id,
+          engagementType: 'FOLLOW',
+        },
+      });
+      return count;
+    },
+    followingCount: async (parent: any) => {
+      const count = await prisma.followEngagement.count({
+        where: {
+          followerId: parent.id,
+          engagementType: 'FOLLOW',
+        },
+      });
+      return count;
+    },
+    videosCount: async (parent: any) => {
+      const count = await prisma.video.count({
+        where: {
+          userId: parent.id,
+        },
+      });
+      return count;
+    },
     Followers: async (parent: any) => {
       const followers = await prisma.followEngagement.findMany({
         where: {
