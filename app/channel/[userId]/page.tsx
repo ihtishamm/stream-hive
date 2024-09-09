@@ -15,6 +15,8 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import getInitials from "@/Utils/getInitials";
 import { UserRoundPlus } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
+import ChannelSkeleton from "@/components/skeltions/channelSkelton";
 const dummyPlaylists = [
   {
     id: 1,
@@ -57,6 +59,14 @@ export default function UserChannel() {
     variables: { userId },
   });
 
+  if (fetching) {
+    return (
+      <ChannelSkeleton />
+    );
+  }
+  if (error) {
+    return <p>Error fetching user</p>;
+  }
 
 
   const Immage = `https://yt3.googleusercontent.com/NbeXiY_cA3_-6tujF7Ucf8QSxAy2z5x-My8UYiwyCW9truF3Yc0myEZQlTJeI8sSkc-xYX9KMQ=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj`;
