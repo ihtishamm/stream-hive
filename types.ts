@@ -46,3 +46,10 @@ export type AnnouncementType = {
 export type UserAnnouncementsResponse = {
   getUserAnnouncements: AnnouncementType[];
 };
+
+export type CloudinaryUploadResponse = {
+  secure_url: string;
+  url: string;
+  public_id: string;
+  format: string;
+};
