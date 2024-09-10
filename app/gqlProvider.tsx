@@ -6,7 +6,9 @@ import {
     ssrExchange,
     fetchExchange,
     createClient,
+
 } from '@urql/next'
+import { multipartFetchExchange } from '@urql/exchange-multipart-fetch';
 import { cacheExchange } from '@urql/exchange-graphcache'
 
 import { url } from "@/Utils/url"
@@ -20,7 +22,7 @@ export default function GQLProvider({ children }: PropsWithChildren) {
 
         const client = createClient({
             url,
-            exchanges: [cacheExchange({}), ssr, fetchExchange],
+            exchanges: [cacheExchange({}), ssr, fetchExchange, multipartFetchExchange],
             fetchOptions: () => {
                 const token = getToken()
 
