@@ -4,7 +4,7 @@ import { GraphQLError, } from "graphql";
 import prisma from "@/lib/db";
 import { GraphQLUpload } from "graphql-upload-ts";
 import cloudinary from "@/lib/Cloudinary";
-import { videos } from "@/dummy-data/Home";
+import { CloudinaryUploadResponse } from "@/types";
 
 type SignInArgs = {
   input: SignInInput;
@@ -408,27 +408,46 @@ const resolvers = {
 
         const { title, description, thumbnailFile, videoFile, publish } = input;
 
-        let thumbnailUpload;
+        let thumbnailUpload: CloudinaryUploadResponse | undefined;
         if (thumbnailFile) {
-          thumbnailUpload = await cloudinary.uploader.upload(thumbnailFile.path, {
-            folder: 'thumbnails',
-            resource_type: 'image',
+          const { createReadStream, filename } = await thumbnailFile;
+
+          // Stream the thumbnail file to Cloudinary
+          thumbnailUpload = await new Promise<CloudinaryUploadResponse>((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              {
+                folder: 'thumbnails',
+                resource_type: 'image',
+              },
+              (error, result) => {
+                if (error) reject(error);
+                resolve(result as CloudinaryUploadResponse);  // Ensure proper type casting
+              }
+            );
+            createReadStream().pipe(stream);
           });
         }
 
-        // Upload the video file to Cloudinary
-        let videoUpload;
+        let videoUpload: CloudinaryUploadResponse | undefined;
         if (videoFile) {
-          videoUpload = await cloudinary.uploader.upload(videoFile.path, {
-            folder: 'videos',
-            resource_type: 'video',
-            eager: [
-              { streaming_profile: 'hd', format: 'm3u8' },
-            ],
+          const { createReadStream, filename } = await videoFile;
+
+          videoUpload = await new Promise<CloudinaryUploadResponse>((resolve, reject) => {
+            const stream = cloudinary.uploader.upload_stream(
+              {
+                folder: 'videos',
+                resource_type: 'video',
+                eager: [{ streaming_profile: 'hd', format: 'm3u8' }],
+              },
+              (error, result) => {
+                if (error) reject(error);
+                resolve(result as CloudinaryUploadResponse);  // Ensure proper type casting
+              }
+            );
+            createReadStream().pipe(stream);
           });
         }
 
-        // Create a new video entry in the database
         const video = await prisma.video.create({
           data: {
             title,
@@ -441,7 +460,6 @@ const resolvers = {
         });
 
         return video;
-
       } catch (error) {
         console.error('Error uploading video:', error);
 
@@ -451,6 +469,8 @@ const resolvers = {
         });
       }
     },
+
+
     addComment: async (_: any, args: { input: { videoId: string, message: string } }, ctx: GQLContext) => {
       if (!ctx.user) {
         throw new GraphQLError("Unauthorized", {

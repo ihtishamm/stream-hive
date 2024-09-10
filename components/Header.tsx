@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useSidebarContext } from "@/contexts/sidebarContext";
 import { isAuth } from "@/lib/token";
 import { UserProfile } from "./UserProfile";
+import { UploadMenu } from "./uploadMenu";
 import Link from "next/link";
 import { Button } from "./ui/button";
 
@@ -59,14 +60,14 @@ export function PageHeader() {
         >
           <Search />
         </Button>
-        <Button size="icon" variant="ghost">
-          <Upload />
-        </Button>
 
         {isAuthenticated === null ? (
           null
         ) : isAuthenticated ? (
-          <UserProfile />
+          <>
+            <UploadMenu />
+            <UserProfile />
+          </>
         ) : (
           <Link href="/signin">
             <Button className="mr-4">Sign in</Button>
