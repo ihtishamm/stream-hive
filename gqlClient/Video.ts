@@ -10,8 +10,5 @@ export const UploadVideo = gql`
     description
     createdAt
     videoUrl
-    user {
-      name
-    }
   }
 }`
