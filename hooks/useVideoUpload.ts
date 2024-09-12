@@ -17,7 +17,7 @@ export function useVideoUpload(videoDetails: VideoDetails, selectedVideo: File |
     const { toast } = useToast();
     const router = useRouter();
 
-    console.log(videoDetails, selectedVideo);
+    const { title, description, thumbnail } = videoDetails;
 
     const handleUpload = async () => {
         if (!videoDetails.title || !videoDetails.description || !selectedVideo) {
@@ -36,14 +36,15 @@ export function useVideoUpload(videoDetails: VideoDetails, selectedVideo: File |
 
         try {
 
-            // await uploadVideo({
-            //     input: {
-            //         title,
-            //         description,
-            //         thumbnailFile: thumbnail,
-            //         videoFile: selectedVideo
-            //     }
-            // });
+            await uploadVideo({
+
+                input: {
+                    title,
+                    description,
+                    publish: true,
+                }
+
+            });
 
 
             toast({

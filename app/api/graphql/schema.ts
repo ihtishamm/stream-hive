@@ -38,11 +38,11 @@ const schema = `#graphql
       id: ID!
       title: String!
       description: String!
-      thumbnailUrl: String!
-      videoUrl: String!
+      thumbnailUrl: String
+      videoUrl: String
       publish: Boolean!
       createdAt: String!
-      user: User!
+      user: User
      }
       type Comment {
         id: ID!
@@ -122,8 +122,8 @@ const schema = `#graphql
    input VideoInput {
     title: String!
     description: String!
-    thumbnailFile: Upload!
-    videoFile: Upload!
+    thumbnailFile: Upload
+    videoFile: Upload
      publish: Boolean = true
   }
        input CommentInput {
