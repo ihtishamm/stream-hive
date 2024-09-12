@@ -3,8 +3,7 @@ import { signin, signup } from "@/lib/auth";
 import { GraphQLError, } from "graphql";
 import prisma from "@/lib/db";
 import { GraphQLUpload } from "graphql-upload-ts";
-import cloudinary from "@/lib/Cloudinary";
-import { CloudinaryUploadResponse } from "@/types";
+
 
 type SignInArgs = {
   input: SignInInput;
@@ -407,53 +406,55 @@ const resolvers = {
         }
 
         const { title, description, thumbnailFile, videoFile, publish } = input;
+        console.log("thumbnailFile", thumbnailFile)
+        console.log("videoFile", videoFile);
 
-        let thumbnailUpload: CloudinaryUploadResponse | undefined;
-        if (thumbnailFile) {
-          const { createReadStream, filename } = await thumbnailFile;
+        // let thumbnailUpload: CloudinaryUploadResponse | undefined;
+        // if (thumbnailFile) {
+        //   const { createReadStream, filename } = await thumbnailFile;
 
-          // Stream the thumbnail file to Cloudinary
-          thumbnailUpload = await new Promise<CloudinaryUploadResponse>((resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream(
-              {
-                folder: 'thumbnails',
-                resource_type: 'image',
-              },
-              (error, result) => {
-                if (error) reject(error);
-                resolve(result as CloudinaryUploadResponse);  // Ensure proper type casting
-              }
-            );
-            createReadStream().pipe(stream);
-          });
-        }
+        //   // Stream the thumbnail file to Cloudinary
+        //   thumbnailUpload = await new Promise<CloudinaryUploadResponse>((resolve, reject) => {
+        //     const stream = cloudinary.uploader.upload_stream(
+        //       {
+        //         folder: 'thumbnails',
+        //         resource_type: 'image',
+        //       },
+        //       (error, result) => {
+        //         if (error) reject(error);
+        //         resolve(result as CloudinaryUploadResponse);  // Ensure proper type casting
+        //       }
+        //     );
+        //     createReadStream().pipe(stream);
+        //   });
+        // }
 
-        let videoUpload: CloudinaryUploadResponse | undefined;
-        if (videoFile) {
-          const { createReadStream, filename } = await videoFile;
+        // let videoUpload: CloudinaryUploadResponse | undefined;
+        // if (videoFile) {
+        //   const { createReadStream, filename } = await videoFile;
 
-          videoUpload = await new Promise<CloudinaryUploadResponse>((resolve, reject) => {
-            const stream = cloudinary.uploader.upload_stream(
-              {
-                folder: 'videos',
-                resource_type: 'video',
-                eager: [{ streaming_profile: 'hd', format: 'm3u8' }],
-              },
-              (error, result) => {
-                if (error) reject(error);
-                resolve(result as CloudinaryUploadResponse);  // Ensure proper type casting
-              }
-            );
-            createReadStream().pipe(stream);
-          });
-        }
+        //   videoUpload = await new Promise<CloudinaryUploadResponse>((resolve, reject) => {
+        //     const stream = cloudinary.uploader.upload_stream(
+        //       {
+        //         folder: 'videos',
+        //         resource_type: 'video',
+        //         eager: [{ streaming_profile: 'hd', format: 'm3u8' }],
+        //       },
+        //       (error, result) => {
+        //         if (error) reject(error);
+        //         resolve(result as CloudinaryUploadResponse);  // Ensure proper type casting
+        //       }
+        //     );
+        //     createReadStream().pipe(stream);
+        //   });
+        // }
 
         const video = await prisma.video.create({
           data: {
             title,
             description,
-            thumbnailUrl: thumbnailUpload?.secure_url,
-            videoUrl: videoUpload?.secure_url,
+            thumbnailUrl: "https://res.cloudinary.com/dx3xjvzvz/image/upload/v1633660734/thumbnails/ytdefault.jpg",
+            videoUrl: "https://res.cloudinary.com/dx3xjvzvz/video/upload/v1633660734/videos/ytdefault.mp4",
             publish,
             userId: ctx.user.id,
           },
