@@ -5,6 +5,7 @@ import prisma from "@/lib/db";
 import { GraphQLUpload } from "graphql-upload-ts";
 
 
+
 type SignInArgs = {
   input: SignInInput;
 };
@@ -406,8 +407,10 @@ const resolvers = {
         }
 
         const { title, description, thumbnailFile, videoFile, publish } = input;
-        console.log("thumbnailFile", thumbnailFile)
-        console.log("videoFile", videoFile);
+
+
+        console.log("thumbnailFile", await thumbnailFile)
+        console.log("videoFile", await videoFile);
 
         // let thumbnailUpload: CloudinaryUploadResponse | undefined;
         // if (thumbnailFile) {
