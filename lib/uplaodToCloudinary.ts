@@ -1,6 +1,5 @@
 import { UploadApiErrorResponse, UploadApiResponse } from "cloudinary";
 import { cloudinary } from "./Cloudinary";
-import { NextRequest } from "next/server";
 
 type UploadResponse =
     { success: true; result?: UploadApiResponse } |
@@ -14,7 +13,7 @@ const uploadToCloudinary = (
                 invalidate: true,
                 resource_type: "auto",
                 filename_override: fileName,
-                folder: "product-images", // any sub-folder name in your cloud
+                folder: "streaming-products", // any sub-folder name in your cloud
                 use_filename: true,
             })
             .then((result) => {

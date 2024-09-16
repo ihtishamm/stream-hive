@@ -1,7 +1,6 @@
-"use client"
+"use client";
 
-import { useMutation } from 'urql';
-import { UploadVideo } from '@/gqlClient/Video';
+import { useState } from 'react';
 import { useToast } from "@/hooks/use-toast";
 import { useRouter } from "next/navigation";
 
@@ -12,15 +11,14 @@ interface VideoDetails {
 }
 
 export function useVideoUpload(videoDetails: VideoDetails, selectedVideo: File | null, onClose: () => void) {
-    const [result, uploadVideo] = useMutation(UploadVideo);
-    const { fetching: isUploading } = result;
+    const [isUploading, setIsUploading] = useState(false);
     const { toast } = useToast();
     const router = useRouter();
 
     const { title, description, thumbnail } = videoDetails;
 
     const handleUpload = async () => {
-        if (!videoDetails.title || !videoDetails.description || !selectedVideo) {
+        if (!title || !description || !selectedVideo || !thumbnail) {
             toast({
                 title: "Missing required fields",
                 description: "Please fill out all the fields before submitting.",
@@ -28,41 +26,54 @@ export function useVideoUpload(videoDetails: VideoDetails, selectedVideo: File |
             });
             return;
         }
+
         toast({
             title: "Uploading...",
             description: "Your video is being uploaded. Please wait.",
         });
 
+        setIsUploading(true);
 
         try {
+            // Step 1: Create FormData with video, thumbnail, title, description, etc.
+            const formData = new FormData();
+            formData.append('thumbnail', thumbnail);
+            formData.append('video', selectedVideo);
+            formData.append('title', title);
+            formData.append('description', description);
+            formData.append('publish', 'true'); // Add additional fields as needed
 
-            await uploadVideo({
-
-                input: {
-                    title,
-                    description,
-                    publish: true,
-                }
-
+            // Step 2: Send API request to upload files
+            const response = await fetch("/api/upload", {
+                method: "POST",
+                body: formData,
             });
 
+            if (!response.ok) {
+                throw new Error("Failed to upload files");
+            }
+
+            const data = await response.json();
 
             toast({
-                title: "Video uploaded successfully!",
-                description: "Your video has been uploaded.",
+                title: "Upload successful!",
+                description: `Your video has been uploaded successfully`,
                 variant: "default",
             });
 
             onClose();
             router.push("/");
         } catch (error) {
+            console.error("Upload failed", error);
             toast({
                 title: "Upload failed",
                 description: "There was an issue uploading your video. Please try again.",
                 variant: "destructive",
             });
+        } finally {
+            setIsUploading(false);
         }
-    }
+    };
 
     return { handleUpload, isUploading };
 }
