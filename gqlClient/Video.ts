@@ -12,3 +12,21 @@ export const UploadVideo = gql`
     videoUrl
   }
 }`
+
+export const AllVideos = gql`
+ query Query {
+  getallVideos {
+    id
+    thumbnailUrl
+    title
+    videoUrl
+    description
+    publish
+    createdAt
+    user {
+      image
+      id
+      name
+    }
+  }
+}`

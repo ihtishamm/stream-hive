@@ -1,7 +1,6 @@
 "use client";
 import Image from "next/image";
 import { videos } from "@/dummy-data/Home";
-import { subscriptions } from "@/dummy-data/Sidebar";
 import { useEffect, useState } from "react";
 import FollowersList from "@/components/follwerList";
 import { VideoGridItem } from "@/components/VideoGridItems";
