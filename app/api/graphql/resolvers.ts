@@ -82,6 +82,9 @@ const resolvers = {
     },
     getallVideos: async () => {
       return await prisma.video.findMany({
+        where: {
+          publish: true,
+        },
         include: {
           user: true,
         },
