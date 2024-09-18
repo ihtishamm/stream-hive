@@ -1,18 +1,29 @@
-import React from "react";
+"use client"
 
-import { videos } from "@/dummy-data/Home";
+import { CldVideoPlayer } from 'next-cloudinary';
+import 'next-cloudinary/dist/cld-video-player.css';
+
 
 export function VideoPlayer() {
+
+
   return (
-    <div className="relative w-full aspect-video">
-      <video
-        controls
-        className="w-full h-full"
-        src={videos[0].videoUrl}
-      >
-        Your browser does not support the video tag.
-      </video>
-    </div>
+    <CldVideoPlayer
+      id='sea-turtle'
+      width='50'
+      height='50'
+      src='samples/sea-turtle'
+      aiHighlightsGraph={true}
+      autoPlay={true}
+      pictureInPictureToggle={true}
+      autoShowRecommendations={true}
+      showLogo={false}
+      transformation={{
+        streaming_profile: 'hd',
+      }}
+      sourceTypes={['hls']}
+    />
+
   );
 };
 

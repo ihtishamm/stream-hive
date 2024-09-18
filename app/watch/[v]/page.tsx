@@ -9,11 +9,8 @@ export default function WatchVideoPage({ params }: { params: { videoId: string }
 
   return (
     <div className="container mx-auto p-4 flex flex-col lg:flex-row gap-8">
-      {/* Main Video Section */}
       <div className="flex-1">
         <VideoPlayer />
-
-        {/* Video Details (Title, Likes, User Info, etc.) */}
         <div className="mt-4">
           <h1 className="text-2xl font-bold mb-2">Video Title</h1>
           <div className="flex items-center justify-between mb-4">
@@ -32,11 +29,9 @@ export default function WatchVideoPage({ params }: { params: { videoId: string }
           <p className="text-gray-700 mb-4">Video description and details...</p>
         </div>
 
-        {/* Comments Section */}
         <CommentsSection videoId={videoId} />
       </div>
 
-      {/* Recommended Videos Section */}
       <div className="lg:w-1/3">
         <div>
           <SearchVideoItem
@@ -48,7 +43,7 @@ export default function WatchVideoPage({ params }: { params: { videoId: string }
             duration={120}
             thumbnailUrl={videos[0].thumbnailUrl}
             videoUrl={videos[0].videoUrl}
-            
+
           />
           <SearchVideoItem
             id="1"
@@ -90,11 +85,10 @@ export default function WatchVideoPage({ params }: { params: { videoId: string }
             thumbnailUrl={videos[0].thumbnailUrl}
             videoUrl={videos[0].videoUrl}
           />
-          
+
         </div>
       </div>
     </div>
   );
 }
 
-  
