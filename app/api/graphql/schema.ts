@@ -43,6 +43,7 @@ const schema = `#graphql
       publish: Boolean!
       createdAt: String!
       user: User
+      viewsCount: Int!
      }
       type Comment {
         id: ID!

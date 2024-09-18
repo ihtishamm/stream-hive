@@ -672,6 +672,22 @@ const resolvers = {
       });
     }
   },
+  Video: {
+    user: async (parent: any) => {
+      return await prisma.user.findUnique({
+        where: { id: parent.userId },
+      });
+    },
+    viewsCount: async (parent: any) => {
+      const count = await prisma.videoEngagement.count({
+        where: {
+          videoId: parent.id,
+          engagementType: 'VIEW',
+        },
+      });
+      return count;
+    },
+  },
   Announcement: {
     likeCount: async (parent: any) => {
       const count = await prisma.announcementEngagement.count({

@@ -37,6 +37,7 @@ export type Video = {
   publish: boolean
   createdAt: Date;
   user: User
+  viewsCount: number
 }
 export type videoResponse = {
   getallVideos: Video[]
