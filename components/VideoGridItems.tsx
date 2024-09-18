@@ -17,9 +17,11 @@ export function VideoGridItem({
   createdAt,
   thumbnailUrl,
   videoUrl,
+  viewsCount
 }: Video) {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+
 
   useEffect(() => {
     const videoElement = videoRef.current
@@ -77,7 +79,7 @@ export function VideoGridItem({
             {user?.name}
           </Link>
           <div className="text-secondary-text text-sm">
-            {createdAt && VIEW_FORMATTER.format(400)} Views • {formatTimeAgo(new Date("2023-08-29"))}
+            {(createdAt && viewsCount) && VIEW_FORMATTER.format(viewsCount)} Views • {formatTimeAgo(new Date("2023-08-29"))}
           </div>
         </div>
       </div>

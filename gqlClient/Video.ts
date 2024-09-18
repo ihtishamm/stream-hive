@@ -23,6 +23,7 @@ export const AllVideos = gql`
     description
     publish
     createdAt
+    viewsCount
     user {
       image
       id
