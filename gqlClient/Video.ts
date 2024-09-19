@@ -31,3 +31,22 @@ export const AllVideos = gql`
     }
   }
 }`
+
+export const VideoById = gql`query Query($videoId: ID!) {
+  getVideo(videoId: $videoId) {
+    id
+    thumbnailUrl
+    title
+    user {
+      followersCount
+      image
+      name
+      id
+      hasFollowed
+    }
+    createdAt
+    description
+    videoUrl
+    viewsCount
+  }
+}`
