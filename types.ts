@@ -43,6 +43,9 @@ export type videoResponse = {
   getallVideos: Video[]
 }
 
+export type SingleVideoResponse = {
+  getVideo: Video
+}
 export type AnnouncementType = {
   id: string;
   user: {

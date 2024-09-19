@@ -106,6 +106,16 @@ const resolvers = {
         },
       });
     },
+    getVideo: async (_: any, args: { videoId: string }) => {
+      return await prisma.video.findUnique({
+        where: {
+          id: args.videoId,
+        },
+        include: {
+          user: true,
+        },
+      });
+    },
     getVideoComments: async (_: any, args: { videoId: string }) => {
       return await prisma.comment.findMany({
         where: {

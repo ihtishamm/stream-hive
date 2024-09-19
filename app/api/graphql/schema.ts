@@ -152,6 +152,7 @@ const schema = `#graphql
      getUserFollowing(userId: ID!): [User!]!
      getallVideos: [Video!]!
      getUservideos(userId: ID!): [Video!]!
+     getVideo(videoId: ID!): Video!
       getVideoComments(videoId: ID!): [Comment!]!
       getPlaylistVideos(playlistId: ID!): [PlaylistHasVideo!]!
       getUserPlaylists(userId: ID!): [Playlist!]!
