@@ -2,26 +2,23 @@
 
 import { CldVideoPlayer } from 'next-cloudinary';
 import 'next-cloudinary/dist/cld-video-player.css';
+import { Video } from '@/types';
 
 
-export function VideoPlayer() {
+export function VideoPlayer({ video, publicId }: { video: Video, publicId: string }) {
 
 
   return (
     <CldVideoPlayer
-      id='sea-turtle'
+      id={video?.id}
       width='50'
       height='50'
-      src='samples/sea-turtle'
+      src={publicId}
       aiHighlightsGraph={true}
       autoPlay={true}
       pictureInPictureToggle={true}
       autoShowRecommendations={true}
-      showLogo={false}
-      transformation={{
-        streaming_profile: 'hd',
-      }}
-      sourceTypes={['hls']}
+      logo={false}
     />
 
   );
