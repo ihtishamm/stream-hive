@@ -68,13 +68,10 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
             {video?.viewsCount} views • {video?.createdAt ? new Date(video.createdAt).toLocaleDateString() : ""}
           </div>
           {/* Video Description */}
-          <div className="border-t pt-4">
+          <div className="border-t pt-4 pr-4">
             <p className="text-gray-700">{video?.description}</p>
           </div>
         </div>
-
-
-        {/* Comments Section */}
         <CommentsSection videoId={videoId} />
       </div>
 
