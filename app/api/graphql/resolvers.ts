@@ -5,6 +5,7 @@ import prisma from "@/lib/db";
 import { GraphQLUpload } from "graphql-upload-ts";
 
 
+
 type SignInArgs = {
   input: SignInInput;
 };
@@ -81,6 +82,9 @@ const resolvers = {
     },
     getallVideos: async () => {
       return await prisma.video.findMany({
+        where: {
+          publish: true,
+        },
         include: {
           user: true,
         },
@@ -99,6 +103,16 @@ const resolvers = {
         },
         orderBy: {
           createdAt: 'desc',
+        },
+      });
+    },
+    getVideo: async (_: any, args: { videoId: string }) => {
+      return await prisma.video.findUnique({
+        where: {
+          id: args.videoId,
+        },
+        include: {
+          user: true,
         },
       });
     },
@@ -406,8 +420,10 @@ const resolvers = {
         }
 
         const { title, description, thumbnailFile, videoFile, publish } = input;
-        console.log("thumbnailFile", thumbnailFile)
-        console.log("videoFile", videoFile);
+
+
+        console.log("thumbnailFile", await thumbnailFile)
+        console.log("videoFile", await videoFile);
 
         // let thumbnailUpload: CloudinaryUploadResponse | undefined;
         // if (thumbnailFile) {
@@ -668,6 +684,22 @@ const resolvers = {
         },
       });
     }
+  },
+  Video: {
+    user: async (parent: any) => {
+      return await prisma.user.findUnique({
+        where: { id: parent.userId },
+      });
+    },
+    viewsCount: async (parent: any) => {
+      const count = await prisma.videoEngagement.count({
+        where: {
+          videoId: parent.id,
+          engagementType: 'VIEW',
+        },
+      });
+      return count;
+    },
   },
   Announcement: {
     likeCount: async (parent: any) => {

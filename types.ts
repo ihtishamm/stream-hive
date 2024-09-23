@@ -27,6 +27,28 @@ export type User = {
 export type userResponse = {
   getUserById: User;
 };
+
+export type Video = {
+  id: string;
+  thumbnailUrl: string;
+  title: string;
+  videoUrl: string;
+  description: string;
+  publish: boolean
+  createdAt: Date;
+  user: User
+  viewsCount: number
+}
+export type videoResponse = {
+  getallVideos: Video[]
+}
+export type userVideosResponse = {
+  getUservideos: Video[]
+}
+
+export type SingleVideoResponse = {
+  getVideo: Video
+}
 export type AnnouncementType = {
   id: string;
   user: {

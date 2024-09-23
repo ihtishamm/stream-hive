@@ -6,35 +6,22 @@ import { useEffect, useRef, useState } from "react"
 import { formatDuration } from "@/Utils/formatDuration"
 import { formatTimeAgo } from "@/Utils/formatTimeAgo"
 
-type VideoGridItemProps = {
-  id: string
-  title: string
-  channel: {
-    id: string
-    name: string
-    profileUrl: string
-  }
-  views: number
-  postedAt: Date
-  duration: number
-  thumbnailUrl: string
-  videoUrl: string
-}
+import { Video } from "@/types"
 
 const VIEW_FORMATTER = new Intl.NumberFormat(undefined, { notation: "compact" })
 
 export function VideoGridItem({
   id,
   title,
-  channel,
-  views,
-  postedAt,
-  duration,
+  user,
+  createdAt,
   thumbnailUrl,
   videoUrl,
-}: VideoGridItemProps) {
+  viewsCount
+}: Video) {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
+
 
   useEffect(() => {
     const videoElement = videoRef.current
@@ -59,17 +46,15 @@ export function VideoGridItem({
           src={thumbnailUrl}
           alt={title}
           fill
-          className={`block w-full h-full object-cover transition-[border-radius] duration-200 ${
-            isVideoPlaying ? "rounded-none" : "rounded-xl"
-          }`}
+          className={`block w-full h-full object-cover transition-[border-radius] duration-200 ${isVideoPlaying ? "rounded-none" : "rounded-xl"
+            }`}
         />
         <div className="absolute bottom-1 right-1 bg-secondary-dark text-secondary text-sm px-0.5 rounded">
-          {formatDuration(duration)}
+          {formatDuration(938)}
         </div>
         <video
-          className={`block h-full object-cover absolute inset-0 transition-opacity duration-200 ${
-            isVideoPlaying ? "opacity-100 delay-200" : "opacity-0"
-          }`}
+          className={`block h-full object-cover absolute inset-0 transition-opacity duration-200 ${isVideoPlaying ? "opacity-100 delay-200" : "opacity-0"
+            }`}
           ref={videoRef}
           muted
           playsInline
@@ -77,10 +62,10 @@ export function VideoGridItem({
         />
       </Link>
       <div className="flex gap-2">
-        <Link href={`/@${channel.id}`} className="flex-shrink-0">
+        <Link href={`/channel/${user?.id}`} className="flex-shrink-0">
           <Image
-            src={channel.profileUrl}
-            alt={channel.name}
+            src={user?.image ?? ""}
+            alt={user?.name}
             width={48} // 12 * 4 = 48px
             height={48}
             className="w-12 h-12 rounded-full"
@@ -90,11 +75,11 @@ export function VideoGridItem({
           <Link href={`/watch/${id}`} className="font-bold">
             {title}
           </Link>
-          <Link href={`/@${channel.id}`} className="text-secondary-text text-sm">
-            {channel.name}
+          <Link href={`/channel/${user?.id}`} className="text-secondary-text text-sm">
+            {user?.name}
           </Link>
           <div className="text-secondary-text text-sm">
-            {VIEW_FORMATTER.format(views)} Views • {formatTimeAgo(postedAt)}
+            {(createdAt && viewsCount) && VIEW_FORMATTER.format(viewsCount)} Views • {formatTimeAgo(new Date("2023-08-29"))}
           </div>
         </div>
       </div>

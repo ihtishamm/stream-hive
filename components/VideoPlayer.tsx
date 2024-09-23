@@ -1,18 +1,26 @@
-import React from "react";
+"use client"
 
-import { videos } from "@/dummy-data/Home";
+import { CldVideoPlayer } from 'next-cloudinary';
+import 'next-cloudinary/dist/cld-video-player.css';
+import { Video } from '@/types';
 
-export function VideoPlayer() {
+
+export function VideoPlayer({ video, publicId }: { video: Video, publicId: string }) {
+
+
   return (
-    <div className="relative w-full aspect-video">
-      <video
-        controls
-        className="w-full h-full"
-        src={videos[0].videoUrl}
-      >
-        Your browser does not support the video tag.
-      </video>
-    </div>
+    <CldVideoPlayer
+      id={video?.id}
+      width='50'
+      height='50'
+      src={publicId}
+      aiHighlightsGraph={true}
+      autoPlay={true}
+      pictureInPictureToggle={true}
+      autoShowRecommendations={true}
+      logo={false}
+    />
+
   );
 };
 
