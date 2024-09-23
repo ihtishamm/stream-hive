@@ -1,52 +1,57 @@
 "use client";
 
-const dummyFollowers = [
-  {
-    id: '1',
-    name: 'John Doe',
-    handle: 'johndoe',
-    image: 'https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj',
-    viewerHasFollowed: false,
-  },
-  {
-    id: '2',
-    name: 'Jane Smith',
-    handle: 'janesmith',
-    image: "https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj",
-    viewerHasFollowed: true,
-  },
-  {
-    id: '3',
-    name: 'Alice Johnson',
-    handle: 'alicejohnson',
-    image: "https://yt3.ggpht.com/ytc/APkrFKZWeMCsx4Q9e_Hm6nhOOUQ3fv96QGUXiMr1-pPP=s48-c-k-c0x00ffffff-no-rj",
-    viewerHasFollowed: false,
-  },
-];
-
 
 import Image from "next/image";
-import { useState } from "react";
-import { Button } from "@/components/Button"; // Adjust the import according to your project structure
+import { Button } from "@/components/Button"; 
+import { followUser, userFollowers } from "@/gqlClient/user";
+import { useMutation, useQuery } from "urql";
+import { userFollowersResponse } from "@/types";
+import { UserRoundCheck, UserRoundPlus } from "lucide-react";
+import { useEffect, useState } from "react";
 
-const FollowersList = () => {
-  const [followers] = useState(dummyFollowers); // Using dummy data directly
-  const [loading, setLoading] = useState(false); // Set loading state if needed
-  const [error, setError] = useState<any>(null); // Set error state if needed
+const FollowersList = ({ userId, currentUser }: { userId: string, currentUser: string }) => {
+  const [initialFetchComplete, setInitialFetchComplete] = useState(false);
 
-  if (loading) return <div className="text-center text-gray-600">Loading...</div>;
-  if (error) return <div className="text-center text-red-600">An error occurred: {error.message}</div>;
-  if (followers.length === 0) return <div className="text-center text-gray-600">No followers found.</div>;
+  const [{ data, fetching, error }, replay] = useQuery<userFollowersResponse>({
+    query: userFollowers,
+    variables: { userId: userId }
+  });
 
-  const handleFollow = (id: string) => {
-    // Implement follow/unfollow logic here
-    console.log(`Follow/Unfollow user with ID: ${id}`);
+
+  useEffect(() => {
+    if (!fetching && !initialFetchComplete) {
+      setInitialFetchComplete(true);
+    }
+  }, [fetching, initialFetchComplete]);
+
+  const [result, followUserMutation] = useMutation(followUser);
+  const { fetching: refetch } = result;
+
+  const handleFollow = async () => {
+    try {
+      const result = await followUserMutation({ input: { followingId: userId } });
+      if (result.data) {
+        await replay({ requestPolicy: 'network-only' })
+      }
+    } catch (error) {
+      console.error("Error following user:", error);
+    }
   };
+
+  if (!initialFetchComplete) {
+    return (
+      "loading....."
+    );
+  }
+  if (error) {
+    return <p>Error fetching user</p>;
+  }
+  if (data?.getUserFollowers.length === 0) return <div className="text-center text-gray-600">No followers found.</div>;
 
   return (
     <div className="p-2">
       <ul role="list" className="divide-y divide-gray-200">
-        {followers.map((follower) => (
+        {data?.getUserFollowers?.map((follower) => (
           <li className="py-4 flex items-center gap-4" key={follower.id}>
             <Image
               src={follower.image || "/default-avatar.png"} // Provide a default image if none exists
@@ -57,14 +62,21 @@ const FollowersList = () => {
             />
             <div className="flex-grow">
               <p className="font-semibold text-gray-900">{follower.name}</p>
-              <p className="text-gray-600">@{follower.handle}</p>
+              <p className="text-gray-600">{follower.handle}</p>
             </div>
-            <Button
-              className={`text-blue-500 ${follower.viewerHasFollowed ? "bg-gray-200" : "bg-blue-100"}`}
-              onClick={() => handleFollow(follower.id)}
-            >
-              {follower.viewerHasFollowed ? "Following" : "Follow"}
-            </Button>
+            {currentUser !== userId &&
+              (
+                follower.hasFollowed ? (
+                  <Button className="mt-4 flex items-center gap-2 px-4 bg-red-500" variant="default" onClick={handleFollow} disabled={refetch}>
+                    <UserRoundCheck />Following
+                  </Button>
+                ) : (
+                  <Button className="mt-4 flex items-center gap-2 px-4" variant="default" onClick={handleFollow} disabled={refetch}>
+                    <UserRoundPlus />Follow
+                  </Button>
+                )
+              )
+            }
           </li>
         ))}
       </ul>

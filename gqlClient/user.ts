@@ -51,3 +51,15 @@ mutation Mutation($input: FollowInput!) {
     engagementType
   }
 }`
+
+export const userFollowers = gql`
+query GetUserFollowers($userId: ID!) {
+  getUserFollowers(userId: $userId) {
+    name
+    image
+    id
+    handle
+    hasFollowed
+  }
+}
+`
