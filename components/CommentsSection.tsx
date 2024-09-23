@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import moment from "moment";
 
 type Comment = {
   id: number;
   user: string;
   content: string;
+  createdAt: Date;
 };
 
 type CommentsSectionProps = {
@@ -12,8 +14,8 @@ type CommentsSectionProps = {
 
 export const CommentsSection: React.FC<CommentsSectionProps> = ({ videoId }) => {
   const [comments, setComments] = useState<Comment[]>([
-    { id: 1, user: "User 1", content: "Great video!" },
-    { id: 2, user: "User 2", content: "Thanks for sharing!" },
+    { id: 1, user: "User 1", content: "Great video!", createdAt: new Date() },
+    { id: 2, user: "User 2", content: "Thanks for sharing!", createdAt: new Date("2023-09-20") },
   ]);
 
   const [newComment, setNewComment] = useState<string>("");
@@ -21,45 +23,78 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({ videoId }) => 
   const handleCommentSubmit = () => {
     if (newComment.trim()) {
       setComments([
+        {
+          id: comments.length + 1,
+          user: "Current User",
+          content: newComment,
+          createdAt: new Date(),
+        },
         ...comments,
-        { id: comments.length + 1, user: "Current User", content: newComment },
       ]);
       setNewComment("");
     }
   };
 
   return (
-    <div className="mt-6">
-      <h3 className="text-xl font-semibold mb-4">Comments</h3>
-      <div className="space-y-4">
-        {comments.map((comment) => (
-          <div key={comment.id} className="flex items-start gap-2">
-            <img 
-              src={`https://ui-avatars.com/api/?name=${encodeURIComponent(comment.user)}`}
-              alt={comment.user} 
-              className="w-8 h-8 rounded-full"
+    <div className="py-5 lg:px-4">
+      <div className="flex space-x-3 rounded-2xl border border-gray-200 p-6 shadow-sm">
+        <div className="min-w-0 flex-1 space-y-3">
+          {/* Comments Header */}
+          <p className="block text-sm font-medium leading-6 text-gray-900">
+            {comments.length} Comments
+          </p>
+
+          {/* Add Comment Section */}
+          <div className="flex items-start gap-2 mb-6">
+            <img
+              src={`https://ui-avatars.com/api/?name=Current+User`}
+              alt="Current User"
+              className="w-10 h-10 rounded-full"
             />
-            <div>
-              <p className="font-semibold">{comment.user}</p>
-              <p>{comment.content}</p>
+            <div className="flex-1">
+              <textarea
+                value={newComment}
+                onChange={(e) => setNewComment(e.target.value)}
+                placeholder="Add a comment..."
+                className="w-full border p-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                rows={3}
+              />
+              <div className="flex justify-end mt-2">
+                <button
+                  onClick={handleCommentSubmit}
+                  className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                >
+                  Comment
+                </button>
+              </div>
             </div>
           </div>
-        ))}
-      </div>
-      <div className="mt-4">
-        <textarea
-          value={newComment}
-          onChange={(e) => setNewComment(e.target.value)}
-          placeholder="Add a comment..."
-          className="w-full border p-2 rounded"
-          rows={3}
-        />
-        <button
-          onClick={handleCommentSubmit}
-          className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
-        >
-          Comment
-        </button>
+
+          {/* Comments List */}
+          <div className="space-y-6">
+            {comments.map((comment) => (
+              <div key={comment.id} className="my-6">
+                <div className="flex gap-2">
+                  <img
+                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(comment.user)}`}
+                    alt={comment.user}
+                    className="w-10 h-10 rounded-full"
+                  />
+                  <div className="flex-1 flex flex-col">
+                    <div className="flex items-center gap-2">
+                      <p className="font-semibold text-gray-900">{comment.user}</p>
+                      <p className="text-gray-600 text-sm">
+                        {moment(comment.createdAt).fromNow()}
+                      </p>
+                    </div>
+                    <p className="text-gray-700">{comment.content}</p>
+                  </div>
+                </div>
+                <div className="mt-4 border-t border-gray-200" />
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
