@@ -119,7 +119,7 @@ export default function UserChannel() {
           </div>
         )
       case "followers":
-        return <FollowersList />;
+        return <FollowersList userId={userId} currentUser={currentUserId} />;
       case "playlists":
         return (
           <div className="p-2">
