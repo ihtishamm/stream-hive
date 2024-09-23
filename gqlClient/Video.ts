@@ -50,3 +50,22 @@ export const VideoById = gql`query Query($videoId: ID!) {
     viewsCount
   }
 }`
+
+export const UserVideos = gql`
+ query GetUservideos($userId: ID!) {
+  getUservideos(userId: $userId) {
+    id
+    thumbnailUrl
+    title
+    videoUrl
+    viewsCount
+    description
+    createdAt
+    publish
+    user {
+      name
+      image
+      id
+    }
+  }
+}`

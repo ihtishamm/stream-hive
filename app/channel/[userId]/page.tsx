@@ -1,5 +1,6 @@
 "use client";
 import Image from "next/image";
+import { UserVideos } from "@/gqlClient/Video";
 import { videos } from "@/dummy-data/Home";
 import { useEffect, useState } from "react";
 import FollowersList from "@/components/follwerList";
@@ -16,6 +17,7 @@ import getInitials from "@/Utils/getInitials";
 import { UserRoundCheck, UserRoundPlus } from "lucide-react";
 import { followUser } from "@/gqlClient/user";
 import ChannelSkeleton from "@/components/skeltions/channelSkelton";
+import { userVideosResponse } from "@/types";
 const dummyPlaylists = [
   {
     id: 1,
@@ -59,8 +61,15 @@ export default function UserChannel() {
     query: getUserById,
     variables: { userId },
   });
+
+
   const [{ data: meData, error: meError }] = useQuery({
     query: me,
+  });
+
+  const [{ data: videosData, fetching: videosFetching, error: videosError }] = useQuery<userVideosResponse>({
+    query: UserVideos,
+    variables: { userId },
   });
 
   const currentUserId = meData?.me?.id;
@@ -104,7 +113,7 @@ export default function UserChannel() {
       case "videos":
         return (
           <div className="grid gap-4 grid-cols-[repeat(auto-fill,minmax(300px,1fr))]">
-            {videos.map(video => (
+            {videosData?.getUservideos?.map(video => (
               <VideoGridItem key={video.id}  {...video} />
             ))}
           </div>
