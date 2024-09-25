@@ -182,25 +182,44 @@ const resolvers = {
       const video = await prisma.video.findUnique({
         where: { id: args.videoId },
       });
+
       if (!video) {
         throw new GraphQLError('Video not found', {
           extensions: { code: '404' },
         });
       }
-      return await prisma.video.findMany({
+
+      
+      const userVideos = await prisma.video.findMany({
         where: {
           userId: video.userId,
           id: { not: video.id },
+          publish: true, 
         },
-        include: {
-          user: true,
-        },
-        orderBy: {
-          createdAt: 'desc',
-        },
+        include: { user: true },
+        orderBy: { createdAt: 'desc' },
+        take: 3, 
       });
 
+    
+      const userVideosCount = userVideos.length;
+      const remainingVideos = 5 - userVideosCount;
+      const randomVideos = await prisma.video.findMany({
+        where: {
+          userId: { not: video.userId },
+          id: { notIn: [video.id, ...userVideos.map(v => v.id)] },
+          publish: true, 
+        },
+        include: { user: true },
+        orderBy: { createdAt: 'desc' },
+        take: remainingVideos,
+      });
+
+      const relatedVideos = [...userVideos, ...randomVideos];
+
+      return relatedVideos;
     }
+
 
   },
   Mutation: {

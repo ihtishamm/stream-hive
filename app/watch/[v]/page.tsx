@@ -6,7 +6,7 @@ import { VideoById } from "@/gqlClient/Video";
 import { RelatedVideosResponse, SingleVideoResponse } from "@/types";
 import { RelatedVideos } from "@/gqlClient/Video";
 import { useQuery } from "urql";
-import { ThumbsDown, ThumbsUp, MoreVertical, UserRoundPlus } from "lucide-react";
+import { ThumbsDown, ThumbsUp, UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { VideoTitle } from "@/components/skeltions/videoTitleSkelton";
 import Link from "next/link";
