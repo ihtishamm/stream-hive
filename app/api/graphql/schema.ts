@@ -160,6 +160,7 @@ const schema = `#graphql
       getVideoComments(videoId: ID!): [Comment!]!
       getPlaylistVideos(playlistId: ID!): [PlaylistHasVideo!]!
       getUserPlaylists(userId: ID!): [Playlist!]!
+      searchVideos(query: String!): [Video!]!
      
 }
   type Mutation {

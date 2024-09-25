@@ -160,6 +160,25 @@ const resolvers = {
       });
       return playlistvideos.map(p => p.video);
     },
+    searchVideos: async (_: any, args: { query: string }) => {
+      return await prisma.video.findMany({
+        where: {
+          OR: [
+            { title: { contains: args.query, mode: 'insensitive' } },
+            { description: { contains: args.query, mode: 'insensitive' } },
+            { user: { name: { contains: args.query, mode: 'insensitive' } } },
+            { user: { handle: { contains: args.query, mode: 'insensitive' } } },
+          ],
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    }
+
   },
   Mutation: {
     createUser: async (_: any, args: SignUpArgs) => {

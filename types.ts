@@ -50,6 +50,9 @@ export type userVideosResponse = {
   getUservideos: Video[]
 }
 
+export type searchVideosResponse = {
+  searchVideos: Video[]
+}
 export type userFollowersResponse = {
   getUserFollowers: User[]
 }
