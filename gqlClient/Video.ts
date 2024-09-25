@@ -44,6 +44,10 @@ export const VideoById = gql`query Query($videoId: ID!) {
       id
       hasFollowed
     }
+      hasLiked
+    hasDisliked
+    dislikeCount
+    likeCount
     createdAt
     description
     videoUrl
@@ -69,3 +73,34 @@ export const UserVideos = gql`
     }
   }
 }`
+
+export const videoComments = gql`
+query Query($videoId: ID!) {
+  getVideoComments(videoId: $videoId) {
+    id
+    message
+    createdAt
+    user {
+      image
+      name
+      id
+    }
+  }
+}`
+
+export const searchVideo = gql`
+query Query($query: String!) {
+  searchVideos(query: $query) {
+    id
+    title
+    user {
+      name
+      id
+    }
+    viewsCount
+    videoUrl
+    thumbnailUrl
+    createdAt
+  }
+}
+`

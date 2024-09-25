@@ -160,6 +160,25 @@ const resolvers = {
       });
       return playlistvideos.map(p => p.video);
     },
+    searchVideos: async (_: any, args: { query: string }) => {
+      return await prisma.video.findMany({
+        where: {
+          OR: [
+            { title: { contains: args.query, mode: 'insensitive' } },
+            { description: { contains: args.query, mode: 'insensitive' } },
+            { user: { name: { contains: args.query, mode: 'insensitive' } } },
+            { user: { handle: { contains: args.query, mode: 'insensitive' } } },
+          ],
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    }
+
   },
   Mutation: {
     createUser: async (_: any, args: SignUpArgs) => {
@@ -700,6 +719,51 @@ const resolvers = {
       });
       return count;
     },
+    likeCount: async (parent: any) => {
+      const count = await prisma.videoEngagement.count({
+        where: {
+          videoId: parent.id,
+          engagementType: 'LIKE',
+        },
+      });
+      return count;
+    },
+    dislikeCount: async (parent: any) => {
+      const count = await prisma.videoEngagement.count({
+        where: {
+          videoId: parent.id,
+          engagementType: 'DISLIKE',
+        },
+      });
+      return count;
+    },
+    hasLiked: async (parent: any, _args: any, ctx: GQLContext) => {
+      if (!ctx.user) {
+        return false;
+      }
+      const engagement = await prisma.videoEngagement.findFirst({
+        where: {
+          userId: ctx.user.id,
+          videoId: parent.id,
+          engagementType: 'LIKE',
+        },
+      });
+      return Boolean(engagement);
+    },
+    hasDisliked: async (parent: any, _args: any, ctx: GQLContext) => {
+      if (!ctx.user) {
+        return false;
+      }
+      const engagement = await prisma.videoEngagement.findFirst({
+        where: {
+          userId: ctx.user.id,
+          videoId: parent.id,
+          engagementType: 'DISLIKE',
+        },
+      });
+      return Boolean(engagement);
+    }
+
   },
   Announcement: {
     likeCount: async (parent: any) => {

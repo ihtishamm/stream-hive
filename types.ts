@@ -38,6 +38,10 @@ export type Video = {
   createdAt: Date;
   user: User
   viewsCount: number
+  dislikeCount: number;
+  likeCount: number;
+  hasLiked: boolean;
+  hasDisliked: boolean;
 }
 export type videoResponse = {
   getallVideos: Video[]
@@ -46,6 +50,9 @@ export type userVideosResponse = {
   getUservideos: Video[]
 }
 
+export type searchVideosResponse = {
+  searchVideos: Video[]
+}
 export type userFollowersResponse = {
   getUserFollowers: User[]
 }
@@ -68,6 +75,17 @@ export type AnnouncementType = {
   hasDisliked: boolean;
 };
 
+export type Comment = {
+  id: string;
+  message: string;
+  createdAt: string;
+  user: User;
+  video: Video;
+};
+
+export type videoCommentsResponse = {
+  getVideoComments: Comment[]
+}
 export type UserAnnouncementsResponse = {
   getUserAnnouncements: AnnouncementType[];
 };

@@ -1,39 +1,31 @@
 import React, { useState } from "react";
 import moment from "moment";
+import { useQuery } from "urql";
+import { videoComments } from "@/gqlClient/Video";
+import { videoCommentsResponse } from "@/types";
 
-type Comment = {
-  id: number;
-  user: string;
-  content: string;
-  createdAt: Date;
-};
+export const CommentsSection = ({ videoId }: { videoId: string }) => {
+  // State for handling new comments
+  const [newComment, setNewComment] = useState("");
 
-type CommentsSectionProps = {
-  videoId: string;
-};
+  // Fetch comments data
+  const [{ data, fetching, error }] = useQuery<videoCommentsResponse>({
+    query: videoComments,
+    variables: { videoId },
+  });
 
-export const CommentsSection: React.FC<CommentsSectionProps> = ({ videoId }) => {
-  const [comments, setComments] = useState<Comment[]>([
-    { id: 1, user: "User 1", content: "Great video!", createdAt: new Date() },
-    { id: 2, user: "User 2", content: "Thanks for sharing!", createdAt: new Date("2023-09-20") },
-  ]);
-
-  const [newComment, setNewComment] = useState<string>("");
-
+  // Handle comment submission
   const handleCommentSubmit = () => {
-    if (newComment.trim()) {
-      setComments([
-        {
-          id: comments.length + 1,
-          user: "Current User",
-          content: newComment,
-          createdAt: new Date(),
-        },
-        ...comments,
-      ]);
-      setNewComment("");
-    }
+    console.log("hi there");
+    // Additional logic to submit the comment can be added here
   };
+
+
+  // Show error state
+  if (error) return <p>Error loading comments.</p>;
+
+  // Extract comments from the fetched data
+  const comments = data?.getVideoComments || [];
 
   return (
     <div className="py-5 lg:px-4">
@@ -44,7 +36,6 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({ videoId }) => 
             {comments.length} Comments
           </p>
 
-          {/* Add Comment Section */}
           <div className="flex items-start gap-2 mb-6">
             <img
               src={`https://ui-avatars.com/api/?name=Current+User`}
@@ -76,18 +67,18 @@ export const CommentsSection: React.FC<CommentsSectionProps> = ({ videoId }) => 
               <div key={comment.id} className="my-6">
                 <div className="flex gap-2">
                   <img
-                    src={`https://ui-avatars.com/api/?name=${encodeURIComponent(comment.user)}`}
-                    alt={comment.user}
+                    src={comment?.user?.image ?? ""}
+                    alt={comment.user.name}
                     className="w-10 h-10 rounded-full"
                   />
                   <div className="flex-1 flex flex-col">
                     <div className="flex items-center gap-2">
-                      <p className="font-semibold text-gray-900">{comment.user}</p>
+                      <p className="font-semibold text-gray-900">{comment.user.name}</p>
                       <p className="text-gray-600 text-sm">
-                        {moment(comment.createdAt).fromNow()}
+                        {moment(Number(comment.createdAt)).fromNow()}
                       </p>
                     </div>
-                    <p className="text-gray-700">{comment.content}</p>
+                    <p className="text-gray-700">{comment.message}</p>
                   </div>
                 </div>
                 <div className="mt-4 border-t border-gray-200" />

@@ -21,7 +21,7 @@ const schema = `#graphql
     token: String
     description: String
     handle: String
-   backgroundImage: String
+    backgroundImage: String
     image: String
     Announcements: [Announcement]!
     Followers: [User]!
@@ -44,6 +44,10 @@ const schema = `#graphql
       createdAt: String!
       user: User
       viewsCount: Int!
+       likeCount: Int!
+      dislikeCount: Int!
+       hasLiked: Boolean!
+      hasDisliked: Boolean! 
      }
       type Comment {
         id: ID!
@@ -156,6 +160,7 @@ const schema = `#graphql
       getVideoComments(videoId: ID!): [Comment!]!
       getPlaylistVideos(playlistId: ID!): [PlaylistHasVideo!]!
       getUserPlaylists(userId: ID!): [Playlist!]!
+      searchVideos(query: String!): [Video!]!
      
 }
   type Mutation {
