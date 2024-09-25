@@ -7,6 +7,8 @@ import { useMutation } from "urql";
 import { editAnnouncement, deleteAnnouncement, likeAnnouncement, dislikeAnnouncement } from "@/gqlClient/Announcement";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuContent } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
+import { isAuth } from "@/lib/token";
+import AuthDialog from "./AuthDialog";
 
 type AnnouncementProps = {
     announcement: {
@@ -36,7 +38,9 @@ const AnnouncementItem = ({ announcement, currentUserId, onEdit, onDelete }: Ann
     const [, deleteAnnouncementMutation] = useMutation(deleteAnnouncement);
     const [editResult, editAnnouncementMutation] = useMutation(editAnnouncement);
     const [likeResult, likeAnnouncementMutation] = useMutation(likeAnnouncement);
+    const [isDialogOpen, setIsDialogOpen] = useState(false)
     const [dislikeResult, dislikeAnnouncementMutation] = useMutation(dislikeAnnouncement);
+    const [currentAction, setCurrentAction] = useState("");
 
     const handleDelete = async () => {
         await deleteAnnouncementMutation({ deleteAnnouncementId: announcement.id });
@@ -63,6 +67,11 @@ const AnnouncementItem = ({ announcement, currentUserId, onEdit, onDelete }: Ann
     };
 
     const handleLike = async () => {
+        if (!isAuth()) {
+            setCurrentAction("like this announcement")
+            setIsDialogOpen(true)
+            return;
+        }
         try {
             const result = await likeAnnouncementMutation({
                 input: { announcementId: announcement.id }
@@ -75,6 +84,11 @@ const AnnouncementItem = ({ announcement, currentUserId, onEdit, onDelete }: Ann
     };
 
     const handleDislike = async () => {
+        if (!isAuth()) {
+            setCurrentAction("dislike this announcement")
+            setIsDialogOpen(true)
+            return;
+        }
         try {
             const result = await dislikeAnnouncementMutation({
                 input: { announcementId: announcement.id }
@@ -88,6 +102,11 @@ const AnnouncementItem = ({ announcement, currentUserId, onEdit, onDelete }: Ann
 
     return (
         <li className="py-6 bg-gray-100 rounded-lg shadow-md">
+            <AuthDialog
+                isOpen={isDialogOpen}
+                onClose={() => setIsDialogOpen(false)}
+                actionText={currentAction}
+            />
             <div className="flex justify-between">
                 {isEditing ? (
                     <div className="flex flex-col w-full px-6">
