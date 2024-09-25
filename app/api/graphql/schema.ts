@@ -177,8 +177,6 @@ const schema = `#graphql
      createPlaylist(input: CreatePlaylistWithVideoInput!): Playlist!
       addVideoToPlaylist(input: AddVideoToPlaylist!): PlaylistHasVideo!
      
-
-
   }
 
 `
