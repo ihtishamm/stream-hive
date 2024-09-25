@@ -2,9 +2,9 @@
 import { SearchVideoItem } from "@/components/SearchVideoItems";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import CommentsSection from "@/components/CommentsSection";
-import { videos } from "@/dummy-data/Home";
 import { VideoById } from "@/gqlClient/Video";
-import { SingleVideoResponse } from "@/types";
+import { RelatedVideosResponse, SingleVideoResponse } from "@/types";
+import { RelatedVideos } from "@/gqlClient/Video";
 import { useQuery } from "urql";
 import { ThumbsDown, ThumbsUp, MoreVertical, UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -20,11 +20,13 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
   const videoId = params.v;
   console.log(videoId);
   const [{ data, fetching, error }] = useQuery<SingleVideoResponse>({ query: VideoById, variables: { videoId } });
+  const [{ data: relatedVideosData, fetching: RelatedVideoFetching, error: VidoeError }] = useQuery<RelatedVideosResponse>({ query: RelatedVideos, variables: { videoId } });
 
 
   { error && <div>Error: {error.message}</div> }
 
   const video = data?.getVideo;
+  const videos = relatedVideosData?.getRelatedVideos;
   const publicId = video ? extractPublicId(video.videoUrl) : "";
   console.log(publicId);
 
@@ -94,21 +96,14 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
       </div>
 
       {/* Related Videos */}
-      <div className="lg:w-1/3 lg:mt-[-20px]">
+      <div className="lg:w-1/3 lg:mt-[-17px]">
         <div>
-          {/* {videos.map((videoItem) => (
+          {videos?.map((videoItem) => (
             <SearchVideoItem
               key={videoItem.id}
-              id={videoItem.id}
-              title={videoItem.title}
-              user={videoItem.channel}
-              views={videoItem.views}
-              postedAt={new Date(videoItem.postedAt)}
-              duration={videoItem.duration}
-              thumbnailUrl={videoItem.thumbnailUrl}
-              videoUrl={videoItem.videoUrl}
+              {...videoItem}
             />
-          ))} */}
+          ))}
         </div>
       </div>
     </div>

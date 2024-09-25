@@ -1,6 +1,5 @@
 "use client";
 import { SearchVideoItem } from "@/components/SearchVideoItems"
-import { videos } from "@/dummy-data/Home"
 import { useSearchParams } from "next/navigation";
 import { useQuery } from "urql";
 import { searchVideo } from "@/gqlClient/Video";
