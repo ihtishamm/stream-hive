@@ -177,6 +177,29 @@ const resolvers = {
           createdAt: 'desc',
         },
       });
+    },
+    getRelatedVideos: async (_: any, args: { videoId: string }) => {
+      const video = await prisma.video.findUnique({
+        where: { id: args.videoId },
+      });
+      if (!video) {
+        throw new GraphQLError('Video not found', {
+          extensions: { code: '404' },
+        });
+      }
+      return await prisma.video.findMany({
+        where: {
+          userId: video.userId,
+          id: { not: video.id },
+        },
+        include: {
+          user: true,
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+
     }
 
   },

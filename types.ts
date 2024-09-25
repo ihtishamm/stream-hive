@@ -56,6 +56,10 @@ export type searchVideosResponse = {
 export type userFollowersResponse = {
   getUserFollowers: User[]
 }
+export type RelatedVideosResponse = {
+  getRelatedVideos: Video[]
+}
+
 export type SingleVideoResponse = {
   getVideo: Video
 }
