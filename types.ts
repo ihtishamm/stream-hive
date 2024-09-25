@@ -68,6 +68,17 @@ export type AnnouncementType = {
   hasDisliked: boolean;
 };
 
+export type Comment = {
+  id: string;
+  message: string;
+  createdAt: string;
+  user: User;
+  video: Video;
+};
+
+export type videoCommentsResponse = {
+  getVideoComments: Comment[]
+}
 export type UserAnnouncementsResponse = {
   getUserAnnouncements: AnnouncementType[];
 };

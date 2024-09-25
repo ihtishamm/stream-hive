@@ -69,3 +69,17 @@ export const UserVideos = gql`
     }
   }
 }`
+
+export const videoComments = gql`
+query Query($videoId: ID!) {
+  getVideoComments(videoId: $videoId) {
+    id
+    message
+    createdAt
+    user {
+      image
+      name
+      id
+    }
+  }
+}`
