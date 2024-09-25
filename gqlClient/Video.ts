@@ -87,3 +87,20 @@ query Query($videoId: ID!) {
     }
   }
 }`
+
+export const searchVideo = gql`
+query Query($query: String!) {
+  searchVideos(query: $query) {
+    id
+    title
+    user {
+      name
+      id
+    }
+    viewsCount
+    videoUrl
+    thumbnailUrl
+    createdAt
+  }
+}
+`

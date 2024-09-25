@@ -91,19 +91,19 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
       {/* Related Videos */}
       <div className="lg:w-1/3 lg:mt-[-20px]">
         <div>
-          {videos.map((videoItem) => (
+          {/* {videos.map((videoItem) => (
             <SearchVideoItem
               key={videoItem.id}
               id={videoItem.id}
               title={videoItem.title}
-              channel={videoItem.channel}
+              user={videoItem.channel}
               views={videoItem.views}
               postedAt={new Date(videoItem.postedAt)}
               duration={videoItem.duration}
               thumbnailUrl={videoItem.thumbnailUrl}
               videoUrl={videoItem.videoUrl}
             />
-          ))}
+          ))} */}
         </div>
       </div>
     </div>

@@ -5,34 +5,21 @@ import Link from "next/link"
 import { useEffect, useRef, useState } from "react"
 import { formatDuration } from "@/Utils/formatDuration"
 import { formatTimeAgo } from "@/Utils/formatTimeAgo"
+import { Video } from "@/types"
 
-type VideoGridItemProps = {
-  id: string
-  title: string
-  channel: {
-    id: string
-    name: string
-    profileUrl: string
-  }
-  views: number
-  postedAt: Date
-  duration: number
-  thumbnailUrl: string
-  videoUrl: string
-}
+
 
 const VIEW_FORMATTER = new Intl.NumberFormat(undefined, { notation: "compact" })
 
 export function SearchVideoItem({
   id,
   title,
-  channel,
-  views,
-  postedAt,
-  duration,
+  user,
+  createdAt,
   thumbnailUrl,
   videoUrl,
-}: VideoGridItemProps) {
+  viewsCount,
+}: Video) {
   const [isVideoPlaying, setIsVideoPlaying] = useState(false)
   const videoRef = useRef<HTMLVideoElement>(null)
 
@@ -61,17 +48,15 @@ export function SearchVideoItem({
             src={thumbnailUrl}
             alt={title}
             fill
-            className={`block w-full h-full object-cover transition-[border-radius] duration-200 ${
-              isVideoPlaying ? "rounded-none" : "rounded-xl"
-            }`}
+            className={`block w-full h-full object-cover transition-[border-radius] duration-200 ${isVideoPlaying ? "rounded-none" : "rounded-xl"
+              }`}
           />
           <div className="absolute bottom-1 right-1 bg-secondary-dark text-secondary text-sm px-0.5 rounded">
-            {formatDuration(duration)}
+            {formatDuration(938)}
           </div>
           <video
-            className={`block h-full object-cover absolute inset-0 transition-opacity duration-200 ${
-              isVideoPlaying ? "opacity-100 delay-200" : "opacity-0"
-            }`}
+            className={`block h-full object-cover absolute inset-0 transition-opacity duration-200 ${isVideoPlaying ? "opacity-100 delay-200" : "opacity-0"
+              }`}
             ref={videoRef}
             muted
             playsInline
@@ -84,11 +69,11 @@ export function SearchVideoItem({
         <Link href={`/watch/${id}`} className="font-bold text-lg mb-1">
           {title}
         </Link>
-        <Link href={`/@${channel.id}`} className="text-secondary-text text-sm mb-1">
-          {channel.name}
+        <Link href={`/channel/${user?.id}`} className="text-secondary-text text-sm mb-1">
+          {user?.name}
         </Link>
         <div className="text-secondary-text text-sm">
-          {VIEW_FORMATTER.format(views)} Views • {formatTimeAgo(postedAt)}
+          {VIEW_FORMATTER.format(viewsCount)} Views • {formatTimeAgo(new Date("2023-08-29"))}
         </div>
       </div>
     </div>
