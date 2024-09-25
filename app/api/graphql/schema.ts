@@ -72,6 +72,8 @@ const schema = `#graphql
         title: String!
         description: String
         createdAt: String!
+        FirstvideoThumbnail: String
+        videoCount: Int!
         user: User!
         videos: [PlaylistHasVideo!]!
       }

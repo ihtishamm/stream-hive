@@ -87,6 +87,20 @@ export type Comment = {
   video: Video;
 };
 
+
+export type Playlist = {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  FirstvideoThumbnail: string;
+  videoCount: number;
+  user: User;
+};
+export type PlaylistResponse = {
+  getUserPlaylists: Playlist[]
+}
+
 export type videoCommentsResponse = {
   getVideoComments: Comment[]
 }
