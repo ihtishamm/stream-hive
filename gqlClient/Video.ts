@@ -44,6 +44,10 @@ export const VideoById = gql`query Query($videoId: ID!) {
       id
       hasFollowed
     }
+      hasLiked
+    hasDisliked
+    dislikeCount
+    likeCount
     createdAt
     description
     videoUrl

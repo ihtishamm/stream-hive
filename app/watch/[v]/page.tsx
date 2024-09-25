@@ -67,11 +67,11 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
               <div className="flex items-start gap-4 ml-1 lg:ml-28">
                 <button className="flex items-center gap-1 text-gray-700 hover:text-blue-500">
                   <ThumbsUp size={24} className="lg:w-7 lg:h-7" />
-                  <span>{0}</span>
+                  <span>{video?.likeCount}</span>
                 </button>
                 <button className="flex items-center gap-1 text-gray-700 hover:text-red-500">
                   <ThumbsDown size={24} className="lg:w-7 lg:h-7" />
-                  <span>{0}</span>
+                  <span>{video?.dislikeCount}</span>
                 </button>
               </div>
             </div>

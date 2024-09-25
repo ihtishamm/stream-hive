@@ -700,6 +700,51 @@ const resolvers = {
       });
       return count;
     },
+    likeCount: async (parent: any) => {
+      const count = await prisma.videoEngagement.count({
+        where: {
+          videoId: parent.id,
+          engagementType: 'LIKE',
+        },
+      });
+      return count;
+    },
+    dislikeCount: async (parent: any) => {
+      const count = await prisma.videoEngagement.count({
+        where: {
+          videoId: parent.id,
+          engagementType: 'DISLIKE',
+        },
+      });
+      return count;
+    },
+    hasLiked: async (parent: any, _args: any, ctx: GQLContext) => {
+      if (!ctx.user) {
+        return false;
+      }
+      const engagement = await prisma.videoEngagement.findFirst({
+        where: {
+          userId: ctx.user.id,
+          videoId: parent.id,
+          engagementType: 'LIKE',
+        },
+      });
+      return Boolean(engagement);
+    },
+    hasDisliked: async (parent: any, _args: any, ctx: GQLContext) => {
+      if (!ctx.user) {
+        return false;
+      }
+      const engagement = await prisma.videoEngagement.findFirst({
+        where: {
+          userId: ctx.user.id,
+          videoId: parent.id,
+          engagementType: 'DISLIKE',
+        },
+      });
+      return Boolean(engagement);
+    }
+
   },
   Announcement: {
     likeCount: async (parent: any) => {

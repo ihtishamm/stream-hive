@@ -38,6 +38,10 @@ export type Video = {
   createdAt: Date;
   user: User
   viewsCount: number
+  dislikeCount: number;
+  likeCount: number;
+  hasLiked: boolean;
+  hasDisliked: boolean;
 }
 export type videoResponse = {
   getallVideos: Video[]
