@@ -10,6 +10,7 @@ import { ThumbsDown, ThumbsUp, UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { VideoTitle } from "@/components/skeltions/videoTitleSkelton";
 import Link from "next/link";
+import { RelatedVideoSkelton } from "@/components/skeltions/RelatedVideos";
 
 const extractPublicId = (url: string) => {
   const parts = url.split("/video/upload/");
@@ -98,6 +99,7 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
       {/* Related Videos */}
       <div className="lg:w-1/3 lg:mt-[-17px]">
         <div>
+          {RelatedVideoFetching && <RelatedVideoSkelton />}
           {videos?.map((videoItem) => (
             <SearchVideoItem
               key={videoItem.id}
