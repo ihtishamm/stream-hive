@@ -9,6 +9,7 @@ import { useQuery } from "urql";
 import { ThumbsDown, ThumbsUp, MoreVertical, UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { VideoTitle } from "@/components/skeltions/videoTitleSkelton";
+import Link from "next/link";
 
 const extractPublicId = (url: string) => {
   const parts = url.split("/video/upload/");
@@ -49,13 +50,17 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
             <h1 className="text-2xl lg:text-3xl font-bold mb-2">{video?.title}</h1>
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-start mb-6">
               <div className="flex items-center gap-4 mb-4 lg:mb-0">
-                <img
-                  src={video?.user.image ?? ""}
-                  alt={video?.user.name ?? "User Name"}
-                  className="w-10 h-10 lg:w-12 lg:h-12 rounded-full"
-                />
+                <Link href={`/channel/${video?.user?.id}`}>
+                  <img
+                    src={video?.user.image ?? ""}
+                    alt={video?.user.name ?? "User Name"}
+                    className="w-10 h-10 lg:w-12 lg:h-12 rounded-full"
+                  />
+                </Link>
                 <div>
-                  <p className="font-semibold text-lg">{video?.user.name ?? ""}</p>
+                  <Link href={`/channel/${video?.user?.id}`}>
+                    <p className="font-semibold text-lg">{video?.user.name ?? ""}</p>
+                  </Link>
                   <p className="text-gray-500 text-sm mt-1">{video?.user?.followersCount} Followers</p>
                 </div>
 
