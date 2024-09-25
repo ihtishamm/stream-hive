@@ -20,8 +20,7 @@ export const CommentsSection = ({ videoId }: { videoId: string }) => {
     // Additional logic to submit the comment can be added here
   };
 
-  // Show loading state
-  if (fetching) return <p>Loading comments...</p>;
+
   // Show error state
   if (error) return <p>Error loading comments.</p>;
 
@@ -37,7 +36,6 @@ export const CommentsSection = ({ videoId }: { videoId: string }) => {
             {comments.length} Comments
           </p>
 
-          {/* Add Comment Section */}
           <div className="flex items-start gap-2 mb-6">
             <img
               src={`https://ui-avatars.com/api/?name=Current+User`}
