@@ -123,7 +123,7 @@ export default function UserChannel() {
       case "playlists":
         return (
           <div className="p-2">
-            <PlaylistCardStack items={dummyPlaylists} />
+            <PlaylistCardStack userId={userId} />
           </div>
         )
       case "community":

@@ -1,36 +1,32 @@
 "use client";
-import { useState } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import { useQuery } from "urql";
+import { userplaylists } from "@/gqlClient/Playlist";
+import { PlaylistResponse } from "@/types";
+import Spinner from "./Spinner";
 
-type PlaylistCard = {
-  id: number;
-  thumbnailUrl: string;
-  videoCount: number;
-  playlistName: string;
-  channelName: string;
-};
 
-export const PlaylistCardStack = ({
-  items,
-  offset,
-  scaleFactor,
-}: {
-  items: PlaylistCard[];
-  offset?: number;
-  scaleFactor?: number;
-}) => {
+export const PlaylistCardStack = ({ userId }: { userId: string }) => {
+  const [{ data, fetching, error }] = useQuery<PlaylistResponse>({
+    query: userplaylists,
+    variables: { userId },
+  });
+
+  if (fetching) return <Spinner />
+  if (error) return <div>Error: {error.message}</div>;
+  const items = data?.getUserPlaylists;
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-      {items.map((card) => (
+      {items?.map((card) => (
         <motion.div
           key={card.id}
-          className="bg-white dark:bg-black rounded-xl p-4 shadow-xl border border-neutral-200 dark:border-white/[0.1] shadow-black/[0.1] dark:shadow-white/[0.05] transition-transform hover:scale-105"
+          className="bg-white dark:bg-black rounded-xl p-4 shadow-xl dark:border-white/[0.1] shadow-black/[0.1] dark:shadow-white/[0.05] transition-transform hover:scale-105"
         >
           <div className="relative h-40 w-full">
             <Image
-              src={card.thumbnailUrl}
-              alt={card.playlistName}
+              src={card.FirstvideoThumbnail}
+              alt="playlist"
               fill
               className="object-cover rounded-lg"
             />
@@ -40,10 +36,10 @@ export const PlaylistCardStack = ({
           </div>
           <div className="mt-3">
             <p className="text-neutral-900 dark:text-neutral-100 font-bold">
-              {card.playlistName}
+              {card.title}
             </p>
             <p className="text-neutral-500 dark:text-neutral-300 text-sm">
-              {card.channelName}
+              {card.user.name}
             </p>
           </div>
         </motion.div>
