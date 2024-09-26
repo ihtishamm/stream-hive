@@ -96,11 +96,15 @@ export type Playlist = {
   FirstvideoThumbnail: string;
   videoCount: number;
   user: User;
+  videos: Video[];
 };
 export type PlaylistResponse = {
   getUserPlaylists: Playlist[]
 }
 
+export type singlePlaylistResponse = {
+  getPlaylist: Playlist
+}
 export type videoCommentsResponse = {
   getVideoComments: Comment[]
 }
