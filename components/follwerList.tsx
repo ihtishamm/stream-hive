@@ -2,12 +2,13 @@
 
 
 import Image from "next/image";
-import { Button } from "@/components/Button"; 
+import { Button } from "@/components/Button";
 import { followUser, userFollowers } from "@/gqlClient/user";
 import { useMutation, useQuery } from "urql";
 import { userFollowersResponse } from "@/types";
 import { UserRoundCheck, UserRoundPlus } from "lucide-react";
 import { useEffect, useState } from "react";
+import Spinner from "./Spinner";
 
 const FollowersList = ({ userId, currentUser }: { userId: string, currentUser: string }) => {
   const [initialFetchComplete, setInitialFetchComplete] = useState(false);
@@ -40,7 +41,7 @@ const FollowersList = ({ userId, currentUser }: { userId: string, currentUser: s
 
   if (!initialFetchComplete) {
     return (
-      "loading....."
+      <Spinner />
     );
   }
   if (error) {

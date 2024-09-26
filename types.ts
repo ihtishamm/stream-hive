@@ -56,6 +56,10 @@ export type searchVideosResponse = {
 export type userFollowersResponse = {
   getUserFollowers: User[]
 }
+export type RelatedVideosResponse = {
+  getRelatedVideos: Video[]
+}
+
 export type SingleVideoResponse = {
   getVideo: Video
 }
@@ -83,6 +87,24 @@ export type Comment = {
   video: Video;
 };
 
+
+export type Playlist = {
+  id: string;
+  title: string;
+  description: string;
+  createdAt: string;
+  FirstvideoThumbnail: string;
+  videoCount: number;
+  user: User;
+  videos: Video[];
+};
+export type PlaylistResponse = {
+  getUserPlaylists: Playlist[]
+}
+
+export type singlePlaylistResponse = {
+  getPlaylist: Playlist
+}
 export type videoCommentsResponse = {
   getVideoComments: Comment[]
 }

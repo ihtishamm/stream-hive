@@ -2,13 +2,15 @@
 import { SearchVideoItem } from "@/components/SearchVideoItems";
 import { VideoPlayer } from "@/components/VideoPlayer";
 import CommentsSection from "@/components/CommentsSection";
-import { videos } from "@/dummy-data/Home";
 import { VideoById } from "@/gqlClient/Video";
-import { SingleVideoResponse } from "@/types";
+import { RelatedVideosResponse, SingleVideoResponse } from "@/types";
+import { RelatedVideos } from "@/gqlClient/Video";
 import { useQuery } from "urql";
-import { ThumbsDown, ThumbsUp, MoreVertical, UserRoundPlus } from "lucide-react";
+import { ThumbsDown, ThumbsUp, UserRoundPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { VideoTitle } from "@/components/skeltions/videoTitleSkelton";
+import Link from "next/link";
+import { RelatedVideoSkelton } from "@/components/skeltions/RelatedVideos";
 
 const extractPublicId = (url: string) => {
   const parts = url.split("/video/upload/");
@@ -19,11 +21,13 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
   const videoId = params.v;
   console.log(videoId);
   const [{ data, fetching, error }] = useQuery<SingleVideoResponse>({ query: VideoById, variables: { videoId } });
+  const [{ data: relatedVideosData, fetching: RelatedVideoFetching, error: VidoeError }] = useQuery<RelatedVideosResponse>({ query: RelatedVideos, variables: { videoId } });
 
 
   { error && <div>Error: {error.message}</div> }
 
   const video = data?.getVideo;
+  const videos = relatedVideosData?.getRelatedVideos;
   const publicId = video ? extractPublicId(video.videoUrl) : "";
   console.log(publicId);
 
@@ -49,13 +53,17 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
             <h1 className="text-2xl lg:text-3xl font-bold mb-2">{video?.title}</h1>
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-start mb-6">
               <div className="flex items-center gap-4 mb-4 lg:mb-0">
-                <img
-                  src={video?.user.image ?? ""}
-                  alt={video?.user.name ?? "User Name"}
-                  className="w-10 h-10 lg:w-12 lg:h-12 rounded-full"
-                />
+                <Link href={`/channel/${video?.user?.id}`}>
+                  <img
+                    src={video?.user.image ?? ""}
+                    alt={video?.user.name ?? "User Name"}
+                    className="w-10 h-10 lg:w-12 lg:h-12 rounded-full"
+                  />
+                </Link>
                 <div>
-                  <p className="font-semibold text-lg">{video?.user.name ?? ""}</p>
+                  <Link href={`/channel/${video?.user?.id}`}>
+                    <p className="font-semibold text-lg">{video?.user.name ?? ""}</p>
+                  </Link>
                   <p className="text-gray-500 text-sm mt-1">{video?.user?.followersCount} Followers</p>
                 </div>
 
@@ -89,21 +97,15 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
       </div>
 
       {/* Related Videos */}
-      <div className="lg:w-1/3 lg:mt-[-20px]">
+      <div className="lg:w-1/3 lg:mt-[-17px]">
         <div>
-          {/* {videos.map((videoItem) => (
+          {RelatedVideoFetching && <RelatedVideoSkelton />}
+          {videos?.map((videoItem) => (
             <SearchVideoItem
               key={videoItem.id}
-              id={videoItem.id}
-              title={videoItem.title}
-              user={videoItem.channel}
-              views={videoItem.views}
-              postedAt={new Date(videoItem.postedAt)}
-              duration={videoItem.duration}
-              thumbnailUrl={videoItem.thumbnailUrl}
-              videoUrl={videoItem.videoUrl}
+              {...videoItem}
             />
-          ))} */}
+          ))}
         </div>
       </div>
     </div>

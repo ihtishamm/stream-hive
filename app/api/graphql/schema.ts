@@ -48,6 +48,7 @@ const schema = `#graphql
       dislikeCount: Int!
        hasLiked: Boolean!
       hasDisliked: Boolean! 
+      playlist: Playlist
      }
       type Comment {
         id: ID!
@@ -72,13 +73,15 @@ const schema = `#graphql
         title: String!
         description: String
         createdAt: String!
+        FirstvideoThumbnail: String
+        videoCount: Int!
         user: User!
-        videos: [PlaylistHasVideo!]!
+        videos: [Video!]!
       }
          type PlaylistHasVideo {
          id: ID!
-          playlist: Playlist!
-          video: Video!
+         playlist: Playlist!
+          video: Video
 }
 
   type AnnouncementEngagement {
@@ -158,9 +161,10 @@ const schema = `#graphql
      getUservideos(userId: ID!): [Video!]!
      getVideo(videoId: ID!): Video!
       getVideoComments(videoId: ID!): [Comment!]!
-      getPlaylistVideos(playlistId: ID!): [PlaylistHasVideo!]!
       getUserPlaylists(userId: ID!): [Playlist!]!
+      getPlaylist(playlistId: ID!): Playlist!
       searchVideos(query: String!): [Video!]!
+      getRelatedVideos(videoId: ID!): [Video!]!
      
 }
   type Mutation {
@@ -177,8 +181,6 @@ const schema = `#graphql
      createPlaylist(input: CreatePlaylistWithVideoInput!): Playlist!
       addVideoToPlaylist(input: AddVideoToPlaylist!): PlaylistHasVideo!
      
-
-
   }
 
 `

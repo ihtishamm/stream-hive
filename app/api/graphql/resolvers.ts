@@ -3,6 +3,7 @@ import { signin, signup } from "@/lib/auth";
 import { GraphQLError, } from "graphql";
 import prisma from "@/lib/db";
 import { GraphQLUpload } from "graphql-upload-ts";
+import { get } from "http";
 
 
 
@@ -134,10 +135,22 @@ const resolvers = {
       return await prisma.playlist.findMany({
         where: {
           userId: args.userId,
+          videos: {
+            some: {
+              video: {
+                publish: true,
+              },
+            },
+          },
         },
         include: {
           user: true,
           videos: {
+            where: {
+              video: {
+                publish: true,
+              },
+            },
             include: {
               video: true,
             },
@@ -148,18 +161,36 @@ const resolvers = {
         },
       });
     },
-    getPlaylistVideos: async (_: any, args: { playlistId: string }) => {
-      const playlistvideos = await prisma.playlistHasVideo.findMany({
-        where: {
-          playlistId: args.playlistId,
-        },
-        include: {
-          video: true,
-          playlist: true,
-        },
-      });
-      return playlistvideos.map(p => p.video);
+
+    getPlaylist: async (_: any, args: { playlistId: string }) => {
+      try {
+        const playlist = await prisma.playlist.findUnique({
+          where: {
+            id: args.playlistId,
+          },
+          include: {
+            user: true,
+            videos: {
+              include: {
+                video: true,
+              },
+            },
+          },
+        });
+
+        if (!playlist) {
+          throw new Error('Playlist not found');
+        }
+
+        return playlist;
+      } catch (error) {
+        console.error('Error fetching playlist:', error);
+        throw new Error('Could not fetch playlist');
+      }
     },
+
+
+
     searchVideos: async (_: any, args: { query: string }) => {
       return await prisma.video.findMany({
         where: {
@@ -177,7 +208,49 @@ const resolvers = {
           createdAt: 'desc',
         },
       });
+    },
+    getRelatedVideos: async (_: any, args: { videoId: string }) => {
+      const video = await prisma.video.findUnique({
+        where: { id: args.videoId },
+      });
+
+      if (!video) {
+        throw new GraphQLError('Video not found', {
+          extensions: { code: '404' },
+        });
+      }
+
+
+      const userVideos = await prisma.video.findMany({
+        where: {
+          userId: video.userId,
+          id: { not: video.id },
+          publish: true,
+        },
+        include: { user: true },
+        orderBy: { createdAt: 'desc' },
+        take: 3,
+      });
+
+
+      const userVideosCount = userVideos.length;
+      const remainingVideos = 5 - userVideosCount;
+      const randomVideos = await prisma.video.findMany({
+        where: {
+          userId: { not: video.userId },
+          id: { notIn: [video.id, ...userVideos.map(v => v.id)] },
+          publish: true,
+        },
+        include: { user: true },
+        orderBy: { createdAt: 'desc' },
+        take: remainingVideos,
+      });
+
+      const relatedVideos = [...userVideos, ...randomVideos];
+
+      return relatedVideos;
     }
+
 
   },
   Mutation: {
@@ -762,6 +835,16 @@ const resolvers = {
         },
       });
       return Boolean(engagement);
+    },
+    playlist: async (parent: any) => {
+      return await prisma.playlistHasVideo.findFirst({
+        where: {
+          videoId: parent.id,
+        },
+        include: {
+          playlist: true,
+        },
+      });
     }
 
   },
@@ -817,7 +900,37 @@ const resolvers = {
         where: { id: parent.announcementId },
       });
     },
-  }
+  },
+  Playlist: {
+    FirstvideoThumbnail: async (parent: any) => {
+      const firstVideo = parent.videos[0];
+      return firstVideo.video.thumbnailUrl;
+    },
+    videoCount: async (parent: any) => {
+      return parent.videos.length;
+    },
+    user: async (parent: any) => {
+      return await prisma.user.findUnique({
+        where: { id: parent.userId },
+      });
+    },
+    videos: async (parent: any) => {
+      return parent.videos.map((pv: any) => pv.video);
+    },
+
+  },
+  PlaylistHasVideo: {
+    playlist: async (parent: any) => {
+      return await prisma.playlist.findUnique({
+        where: { id: parent.playlistId },
+      });
+    },
+    video: async (parent: any) => {
+      return await prisma.video.findUnique({
+        where: { id: parent.videoId },
+      });
+    },
+  },
 };
 
 export default resolvers;

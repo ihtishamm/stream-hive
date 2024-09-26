@@ -105,9 +105,6 @@ export default function UserChannel() {
 
   const isFollowing = data?.getUserById.hasFollowed;
 
-
-  const Immage = `https://yt3.googleusercontent.com/NbeXiY_cA3_-6tujF7Ucf8QSxAy2z5x-My8UYiwyCW9truF3Yc0myEZQlTJeI8sSkc-xYX9KMQ=w1707-fcrop64=1,00005a57ffffa5a8-k-c0xffffffff-no-nd-rj`;
-
   const renderContent = () => {
     switch (activeTab) {
       case "videos":
@@ -123,7 +120,7 @@ export default function UserChannel() {
       case "playlists":
         return (
           <div className="p-2">
-            <PlaylistCardStack items={dummyPlaylists} />
+            <PlaylistCardStack userId={userId} />
           </div>
         )
       case "community":
@@ -145,9 +142,9 @@ export default function UserChannel() {
               <Image
                 src={data?.getUserById.backgroundImage}
                 width={1707}
-                height={300}
+                height={250}
                 objectFit="cover"
-                className="rounded-lg"
+                className="rounded-lg max-h-[250px] w-full object-fill"
                 alt="Channel Banner"
               />
             )

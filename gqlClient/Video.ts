@@ -104,3 +104,19 @@ query Query($query: String!) {
   }
 }
 `
+export const RelatedVideos = gql`
+query Query($videoId: ID!) {
+  getRelatedVideos(videoId: $videoId) {
+    id
+    title
+    viewsCount
+    videoUrl
+    thumbnailUrl
+    createdAt
+    user {
+      name
+      id
+    }
+  }
+}
+`
