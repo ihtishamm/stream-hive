@@ -1,25 +1,15 @@
 import Image from "next/image";
+import { Playlist } from "@/types";
 
-interface PlaylistInfoProps {
-  playlist: {
-    id: string;
-    title: string;
-    description: string;
-    videoCount: number;
-    playlistThumbnail: string;
-    createdAt: Date;
-  };
-}
-
-export const PlaylistInfoCard: React.FC<PlaylistInfoProps> = ({ playlist }) => {
+export const PlaylistInfoCard = ({ playlist }: { playlist: Playlist }) => {
   return (
-    <div className="bg-white dark:bg-black p-6 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700">
+    <div className="bg-white dark:bg-black p-6 rounded-lg shadow-lg border border-neutral-200 dark:border-neutral-700 sticky">
       <div className="relative w-full h-60">
         <Image
-          src={playlist.playlistThumbnail}
-          alt={playlist.title}
+          src={playlist?.FirstvideoThumbnail}
+          alt="playlist"
           fill
-          className="object-cover rounded-lg"
+          className="object-fill rounded-lg"
         />
       </div>
       <div className="mt-4">
@@ -34,7 +24,7 @@ export const PlaylistInfoCard: React.FC<PlaylistInfoProps> = ({ playlist }) => {
         </p>
         <div className="mt-4 text-gray-700 dark:text-gray-300">
           <p>
-            <span className="font-semibold">Video Count:</span> {playlist.videoCount}
+            <span className="font-semibold">{playlist.videoCount} videos</span>
           </p>
         </div>
       </div>

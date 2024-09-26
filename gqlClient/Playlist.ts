@@ -16,3 +16,30 @@ query GetUserPlaylists($userId: ID!) {
   }
 }
 `
+export const singleplaylist = gql`
+query Query($playlistId: ID!) {
+  getPlaylist(playlistId: $playlistId) {
+    title
+    id
+    videos {
+      title
+      thumbnailUrl
+      id
+      user {
+        id
+        name
+      }
+      videoUrl
+      viewsCount
+      createdAt
+    }
+    description
+    createdAt
+    FirstvideoThumbnail
+    videoCount
+    user {
+      id
+      name
+    }
+  }
+}`

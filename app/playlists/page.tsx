@@ -37,7 +37,7 @@ export default function Allplaylists() {
   return (
     <div className="p-8">
       <h1 className="text-2xl font-bold mb-6">All Playlists</h1>
-      <PlaylistCardStack items={dummyPlaylists} />
+      {/* <PlaylistCardStack items={dummyPlaylists} /> */}
     </div>
   );
 }

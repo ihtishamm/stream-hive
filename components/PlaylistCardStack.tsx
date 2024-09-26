@@ -28,10 +28,10 @@ export const PlaylistCardStack = ({ userId }: { userId: string }) => {
               src={card.FirstvideoThumbnail}
               alt="playlist"
               fill
-              className="object-cover rounded-lg"
+              className="object-fill rounded-lg"
             />
             <div className="absolute bottom-2 right-2 bg-black text-white text-sm px-2 py-1 rounded">
-              {card.videoCount} videos
+              {card?.videoCount} videos
             </div>
           </div>
           <div className="mt-3">
