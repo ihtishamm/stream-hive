@@ -165,6 +165,7 @@ const schema = `#graphql
       getPlaylist(playlistId: ID!): Playlist!
       searchVideos(query: String!): [Video!]!
       getRelatedVideos(videoId: ID!): [Video!]!
+      getCurrentUserPlaylists: [Playlist!]!
      
 }
   type Mutation {
