@@ -17,7 +17,7 @@ export default function SinglePlaylist() {
   });
 
   const playlist = data?.getPlaylist;
-  if (fetching) return <Spinner />;
+  if (fetching) return <div className="mt-36"> <Spinner /> </div>;
   if (error) return <div>Error: {error.message}</div>;
   if (!playlist) return <div>Playlist not found</div>;
 
