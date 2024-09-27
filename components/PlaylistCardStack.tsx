@@ -5,6 +5,7 @@ import { useQuery } from "urql";
 import { userplaylists } from "@/gqlClient/Playlist";
 import { PlaylistResponse } from "@/types";
 import Spinner from "./Spinner";
+import { Link } from "lucide-react";
 
 
 export const PlaylistCardStack = ({ userId }: { userId: string }) => {
@@ -23,17 +24,19 @@ export const PlaylistCardStack = ({ userId }: { userId: string }) => {
           key={card.id}
           className="bg-white dark:bg-black rounded-xl p-4 shadow-xl dark:border-white/[0.1] shadow-black/[0.1] dark:shadow-white/[0.05] transition-transform hover:scale-105"
         >
-          <div className="relative h-40 w-full">
-            <Image
-              src={card.FirstvideoThumbnail}
-              alt="playlist"
-              fill
-              className="object-fill rounded-lg"
-            />
-            <div className="absolute bottom-2 right-2 bg-black text-white text-sm px-2 py-1 rounded">
-              {card?.videoCount} videos
+          <Link href={`/playlists/${card.id}`}>
+            <div className="relative h-40 w-full">
+              <Image
+                src={card.FirstvideoThumbnail}
+                alt="playlist"
+                fill
+                className="object-fill rounded-lg"
+              />
+              <div className="absolute bottom-2 right-2 bg-black text-white text-sm px-2 py-1 rounded">
+                {card?.videoCount} videos
+              </div>
             </div>
-          </div>
+          </Link>
           <div className="mt-3">
             <p className="text-neutral-900 dark:text-neutral-100 font-bold">
               {card.title}

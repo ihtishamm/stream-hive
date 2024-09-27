@@ -101,6 +101,9 @@ export type Playlist = {
 export type PlaylistResponse = {
   getUserPlaylists: Playlist[]
 }
+export type currentUserPlaylistResponse = {
+  getCurrentUserPlaylists: Playlist[]
+}
 
 export type singlePlaylistResponse = {
   getPlaylist: Playlist

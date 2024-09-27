@@ -43,3 +43,19 @@ query Query($playlistId: ID!) {
     }
   }
 }`
+
+export const currentUserPlaylist=gql`
+query Query {
+  getCurrentUserPlaylists {
+    id
+    title
+    createdAt
+    description
+    FirstvideoThumbnail
+    videoCount
+    user {
+      id
+      name
+    }
+  }
+}`

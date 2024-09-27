@@ -164,7 +164,7 @@ export default function UserChannel() {
           <div>
             <h1 className="text-2xl font-bold">{data?.getUserById.name}</h1>
             <div className="flex flex-col lg:flex-row lg:items-center gap-1 lg:gap-2 mt-2">
-              <span className="text-sm text-gray-600">@{data?.getUserById.handle ?? "tesingdsa"}</span>
+              <span className="text-sm text-gray-600">{data?.getUserById.handle ?? "tesingdsa"}</span>
               <span className="hidden lg:inline-block">•</span>
               <span className="text-sm text-gray-600">{data?.getUserById.videosCount} videos</span>
             </div>

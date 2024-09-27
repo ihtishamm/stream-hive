@@ -3,7 +3,6 @@ import { signin, signup } from "@/lib/auth";
 import { GraphQLError, } from "graphql";
 import prisma from "@/lib/db";
 import { GraphQLUpload } from "graphql-upload-ts";
-import { get } from "http";
 
 
 
@@ -188,8 +187,30 @@ const resolvers = {
         throw new Error('Could not fetch playlist');
       }
     },
+    getCurrentUserPlaylists: async (_: any, __: any, ctx: GQLContext) => {
+      if (!ctx.user) {
+        throw new GraphQLError("Unauthorized", {
+          extensions: { code: '401' },
+        });
+      }
 
-
+      return await prisma.playlist.findMany({
+        where: {
+          userId: ctx.user.id,
+        },
+        include: {
+          user: true,
+          videos: {
+            include: {
+              video: true,
+            },
+          },
+        },
+        orderBy: {
+          createdAt: 'desc',
+        },
+      });
+    },
 
     searchVideos: async (_: any, args: { query: string }) => {
       return await prisma.video.findMany({
@@ -200,13 +221,17 @@ const resolvers = {
             { user: { name: { contains: args.query, mode: 'insensitive' } } },
             { user: { handle: { contains: args.query, mode: 'insensitive' } } },
           ],
+          publish: true,
+          
         },
         include: {
           user: true,
         },
+      
         orderBy: {
           createdAt: 'desc',
         },
+      
       });
     },
     getRelatedVideos: async (_: any, args: { videoId: string }) => {

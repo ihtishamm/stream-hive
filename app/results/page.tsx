@@ -8,7 +8,7 @@ import Spinner from "@/components/Spinner";
 
 export default function Results() {
   const searchParams = useSearchParams();
-  const query = searchParams?.get("query") || "";
+  const query = searchParams?.get("query");
   const [{ data, fetching, error }] = useQuery<searchVideosResponse>({ query: searchVideo, variables: { query }, pause: !query });
 
   if (error) {
@@ -19,7 +19,6 @@ export default function Results() {
     );
   }
 
-  // No Query Provided
   if (!query) {
     return (
       <div className="flex items-center justify-center h-screen">

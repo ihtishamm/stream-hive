@@ -45,7 +45,7 @@ export function Sidebar() {
           title="Follow"
           url="/follow"
         />
-        <SmallSidebarItem Icon={Library} title="Library" url="/library" />
+        <SmallSidebarItem Icon={Library} title="Library" url="/playlists" />
       </aside>
       {isSmallOpen && (
         <div
