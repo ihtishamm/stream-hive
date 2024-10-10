@@ -86,13 +86,13 @@ async function main() {
             where: { id: user.id },
             update: {
                 ...user,
-                password: hashPassword("defaultPassword123"), // Use a hashed default password
+                password: hashPassword("defaultPassword123"), 
                 image: user.image ? `https://res.cloudinary.com/${cloudinaryName}/${user.image}` : null,
                 backgroundImage: user.backgroundImage ? `https://res.cloudinary.com/${cloudinaryName}/${user.backgroundImage}` : null,
             },
             create: {
                 ...user,
-                password: hashPassword("defaultPassword123"), // Use a hashed default password
+                password: hashPassword("defaultPassword123"), 
                 image: user.image ? `https://res.cloudinary.com/${cloudinaryName}/${user.image}` : null,
                 backgroundImage: user.backgroundImage ? `https://res.cloudinary.com/${cloudinaryName}/${user.backgroundImage}` : null,
             },
