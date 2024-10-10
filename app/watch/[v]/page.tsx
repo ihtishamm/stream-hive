@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { VideoTitle } from "@/components/skeltions/videoTitleSkelton";
 import Link from "next/link";
 import { RelatedVideoSkelton } from "@/components/skeltions/RelatedVideos";
+import { SaveToPlaylistDialog } from "@/components/SaveVideoToPlaylsitDialog";
 
 const extractPublicId = (url: string) => {
   const parts = url.split("/video/upload/");
@@ -81,6 +82,7 @@ export default function WatchVideoPage({ params }: { params: { v: string } }) {
                   <ThumbsDown size={24} className="lg:w-7 lg:h-7" />
                   <span>{video?.dislikeCount}</span>
                 </button>
+                 <SaveToPlaylistDialog videoId={videoId}/>
               </div>
             </div>
             <div className="text-sm text-gray-600 mb-4">
