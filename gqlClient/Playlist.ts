@@ -59,3 +59,25 @@ query Query {
     }
   }
 }`
+
+ export const CreateNewPlaylsit = gql`
+ mutation Mutation($input: CreatePlaylistWithVideoInput!) {
+  createPlaylist(input: $input) {
+    title
+    id
+    description
+  }
+}`
+
+export const AddVideoToPlaylist = gql`
+mutation Mutation($input: AddVideoToPlaylist!) {
+  addVideoToPlaylist(input: $input) {
+    id
+    playlist {
+      title
+    }
+    video {
+      id
+    }
+  }
+}`

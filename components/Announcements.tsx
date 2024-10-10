@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 import { userAnnoucements, createAnnouncement } from "@/gqlClient/Announcement";
 import { useMutation, useQuery } from "urql";
-import { me } from "@/gqlClient/user";
 import AnnouncementItem from "./AnnouncementsItem";
 import CreateAnnouncementForm from "./CreateAnnouncement";
 import { UserAnnouncementsResponse } from "@/types";
