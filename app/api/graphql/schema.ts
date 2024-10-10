@@ -149,6 +149,10 @@ const schema = `#graphql
   playlistId: ID!
   videoId: ID!
   }
+  input removeVideoToPlaylist{
+  playlistId: ID!
+  videoId: ID!
+  }
 
  type Query {
      me: User
@@ -181,6 +185,7 @@ const schema = `#graphql
      addComment(input: CommentInput!): Comment!
      createPlaylist(input: CreatePlaylistWithVideoInput!): Playlist!
       addVideoToPlaylist(input: AddVideoToPlaylist!): PlaylistHasVideo!
+      RemoveVideoFromPlaylist(input:removeVideoToPlaylist!):PlaylistHasVideo!
      
   }
 
